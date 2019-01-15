@@ -17,16 +17,16 @@ namespace SecretSanta.Domain.Models
             get => _FirstName;
             set
             {
-                if (value is null)
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentException("value");
                 }
 
                 value = value.Trim();
 
                 if (value is "")
                 {
-                    throw new ArgumentException("FirstName cannot be blank.", "Value");
+                    throw new ArgumentException("FirstName cannot be blank.", "value");
                 }
 
                 _FirstName = value;
@@ -55,5 +55,12 @@ namespace SecretSanta.Domain.Models
         }
         private string _LastName;
         public ICollection<Gift> Gifts { get; set; }
+        public ICollection<Group> Groups { get; set; }
+
+        public void AddGift(string title, int orderOfImportance, string url, string description)
+        {
+            Gift gift = new Gift(title, orderOfImportance, url, description, this);
+
+        }
     }
 }
