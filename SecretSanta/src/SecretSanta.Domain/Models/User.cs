@@ -24,15 +24,16 @@ namespace SecretSanta.Domain.Models
 
                 value = value.Trim();
 
-                if (value is "")
-                {
-                    throw new ArgumentException("FirstName cannot be blank.", "value");
-                }
+                //if (value is "")
+                //{
+                //    throw new ArgumentException("FirstName cannot be blank.", "value");
+                //}
 
                 _FirstName = value;
             }
         }
         private string _FirstName;
+
         public string LastName
         {
             get => _LastName;

@@ -5,13 +5,14 @@ using System.Text;
 
 namespace SecretSanta.Domain.Models
 {
-    class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Post> Posts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Gift> Gifts { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        { }
+        // passed in param allows us to avoid hard coding the databse connection string
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     }
 }

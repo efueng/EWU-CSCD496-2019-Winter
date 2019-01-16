@@ -14,7 +14,17 @@ namespace SecretSanta.Domain.Tests.Models
         {
             User user = new User { FirstName = "Edmond", LastName = "Dantes" };
             Assert.AreEqual("Edmond", user.FirstName);
+            Assert.AreEqual("Dantes", user.LastName);
+        }
 
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow(default(string))]
+        [DataRow(" ")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void FirstName_AssignedNullOrEmpty_ThrowsArgumentException(string value)
+        {
+            User sut = new User(value, value);
         }
     }
 }
