@@ -70,5 +70,28 @@ namespace SecretSanta.Domain.Tests.Services
                 Assert.AreNotEqual(0, persistedGift.Id);
             }
         }
+
+        [TestMethod]
+        public void FindGift()
+        {
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var myGift = CreateNewGift();
+
+                service.AddGift(myGift);
+            }
+
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var fetchedGift = service.Find(1);
+
+                Assert.AreEqual("Blaster", fetchedGift.Title);
+                //Assert.AreEqual(1, fetchedGift.OrderOfImportance);
+                Assert.AreEqual("www.pewpew.com", fetchedGift.Url);
+                Assert.AreEqual("Designed on Corellia", fetchedGift.Description);
+            }
+        }
     }
 }
