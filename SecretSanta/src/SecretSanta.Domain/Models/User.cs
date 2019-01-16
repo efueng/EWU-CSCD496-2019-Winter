@@ -56,12 +56,6 @@ namespace SecretSanta.Domain.Models
         }
         private string _LastName;
         public ICollection<Gift> Gifts { get; set; }
-        public ICollection<Group> Groups { get; set; }
-
-        public void AddGift(string title, int orderOfImportance, string url, string description)
-        {
-            Gift gift = new Gift(title, orderOfImportance, url, description, this);
-
-        }
+        //public ICollection<Group> Groups { get; set; }
     }
 }

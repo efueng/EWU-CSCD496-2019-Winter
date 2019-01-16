@@ -3,6 +3,7 @@ using SecretSanta.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace SecretSanta.Domain.Services
 {
@@ -14,22 +15,17 @@ namespace SecretSanta.Domain.Services
             DbContext = context;
         }
 
-        public void UpsertUser(User user)
+        public User AddUser(User user)
         {
-            if (user.Id == default(int))
-            {
-                DbContext.Users.Add(user);
-            }
-            else
-            {
-                DbContext.Users.Update(user);
-            }
+            DbContext.Users.Add(user);
             DbContext.SaveChanges();
+
+            return user;
         }
 
         public User Find(int id)
         {
-            return DbContext.Users.Find(id);
+            return DbContext.Users.Include(u => u.Gifts).SingleOrDefault(u => u.Id == id);
         }
 
         public List<User> FetchAll()

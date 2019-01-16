@@ -6,15 +6,6 @@ namespace SecretSanta.Domain.Models
 {
     public class Gift : Entity
     {
-        public Gift(string title, int orderOfImportance, string url, string description, User user)
-        {
-            Title = title;
-            OrderOfImportance = orderOfImportance;
-            Url = url;
-            Description = description;
-            User = user;
-        }
-
         private string _Title;
         public string Title
         {
