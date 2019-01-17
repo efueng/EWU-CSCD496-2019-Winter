@@ -23,6 +23,12 @@ namespace SecretSanta.Domain.Services
             return user;
         }
 
+        public void UpdateUser(User user)
+        {
+            DbContext.Users.Update(user);
+            DbContext.SaveChanges();
+        }
+
         public User Find(int id)
         {
             return DbContext.Users.Include(u => u.Gifts).SingleOrDefault(u => u.Id == id);
