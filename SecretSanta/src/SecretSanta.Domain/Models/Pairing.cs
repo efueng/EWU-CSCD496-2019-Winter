@@ -8,6 +8,8 @@ namespace SecretSanta.Domain.Models
     {
         public User Recipient { get; set; }
         public User Santa { get; set; }
+        public int GroupId { get; set; }
+        public Group Group { get; set; }
 
     }
 }

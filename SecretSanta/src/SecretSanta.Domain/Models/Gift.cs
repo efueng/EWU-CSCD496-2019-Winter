@@ -38,6 +38,8 @@ namespace SecretSanta.Domain.Models
                 {
                     throw new ArgumentOutOfRangeException("OrderOfImportance must be at least 1.", "value");
                 }
+
+                _OrderOfImportance = value;
             }
         }
 

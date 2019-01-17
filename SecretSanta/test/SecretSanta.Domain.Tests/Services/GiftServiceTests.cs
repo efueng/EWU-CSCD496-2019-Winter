@@ -88,7 +88,7 @@ namespace SecretSanta.Domain.Tests.Services
                 var fetchedGift = service.Find(1);
 
                 Assert.AreEqual("Blaster", fetchedGift.Title);
-                //Assert.AreEqual(1, fetchedGift.OrderOfImportance);
+                Assert.AreEqual(1, fetchedGift.OrderOfImportance);
                 Assert.AreEqual("www.pewpew.com", fetchedGift.Url);
                 Assert.AreEqual("Designed on Corellia", fetchedGift.Description);
             }
