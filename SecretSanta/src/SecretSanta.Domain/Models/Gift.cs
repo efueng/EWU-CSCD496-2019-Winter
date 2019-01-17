@@ -40,8 +40,38 @@ namespace SecretSanta.Domain.Models
                 }
             }
         }
-        public string Url { get; set; }
-        public string Description { get; set; }
+
+        private string _Url;
+        public string Url
+        {
+            get => _Url;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("URL cannot be null or empty.", "value");
+                }
+
+                value = value.Trim();
+                _Url = value;
+            }
+        }
+
+        private string _Description;
+        public string Description
+        {
+            get => _Description;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("Description cannot be null or empty.", "value");
+                }
+
+                value = value.Trim();
+                _Description = value;
+            }
+        }
         public int UserId { get; set; }
         public User User { get; set; }
         
