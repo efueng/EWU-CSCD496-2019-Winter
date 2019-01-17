@@ -23,6 +23,28 @@ namespace SecretSanta.Domain.Services
             return gift;
         }
 
+        public void AddGiftForUser(int userId, Gift gift)
+        {
+            User user = DbContext.Users.Find(userId);
+            user.Gifts.Add(gift);
+
+            DbContext.SaveChanges();
+        }
+
+        public void RemoveGiftForUser(int userId, Gift gift)
+        {
+            User user = DbContext.Users.Find(userId);
+            user.Gifts.Remove(gift);
+
+            DbContext.SaveChanges();
+        }
+
+        public void EditGift(Gift gift)
+        {
+            DbContext.Gifts.Update(gift);
+            DbContext.SaveChanges();
+        }
+
         public Gift Find(int id)
         {
             return DbContext.Gifts.Include(g => g.User).SingleOrDefault(g => g.Id == id);
