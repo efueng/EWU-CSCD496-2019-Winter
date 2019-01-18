@@ -15,9 +15,12 @@ namespace SecretSanta.Domain.Services
             DbContext = dbContext;
         }
         
-        public void AddMessage(Message message)
+        public Message AddMessage(Message message)
         {
             DbContext.Messages.Add(message);
+            DbContext.SaveChanges();
+
+            return message;
         }
 
         public Message Find(int id)
