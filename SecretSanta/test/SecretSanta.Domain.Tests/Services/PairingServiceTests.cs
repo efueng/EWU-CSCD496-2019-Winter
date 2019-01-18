@@ -96,6 +96,7 @@ namespace SecretSanta.Domain.Tests.Services
                 var fetchedPairing = service.Find(1);
 
                 Assert.AreEqual("Edmond", fetchedPairing.Santa.FirstName);
+
             }
         }
     }
