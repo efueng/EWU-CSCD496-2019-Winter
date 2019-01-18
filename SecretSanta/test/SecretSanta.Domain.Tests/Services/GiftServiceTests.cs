@@ -72,14 +72,65 @@ namespace SecretSanta.Domain.Tests.Services
         }
 
         [TestMethod]
+        public void UpdateGift()
+        {
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var gift = CreateNewGift();
+
+                var persistedGift = service.AddGift(gift);
+            }
+
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var fetchedGift = service.Find(1);
+
+                fetchedGift.Title = "Updated title";
+                service.UpdateGift(fetchedGift);
+            }
+
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var fetchedGift = service.Find(1);
+
+                Assert.AreEqual("Updated title", fetchedGift.Title);
+            }
+        }
+
+        [TestMethod]
+        public void DeleteGift()
+        {
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var gift = CreateNewGift();
+
+                var persistedGift = service.AddGift(gift);
+            }
+
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var fetchedGift = service.Find(1);
+                var User = fetchedGift.User;
+                service.RemoveGiftForUser(User.Id, fetchedGift);
+
+                Assert.IsNull(service.Find(1));
+            }
+        }
+
+        [TestMethod]
         public void FindGift()
         {
             using (var context = new ApplicationDbContext(Options))
             {
                 GiftService service = new GiftService(context);
                 var myGift = CreateNewGift();
-
-                service.AddGift(myGift);
+                
+                var persistedGift = service.AddGift(myGift);
             }
 
             using (var context = new ApplicationDbContext(Options))

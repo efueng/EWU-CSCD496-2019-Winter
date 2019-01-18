@@ -39,7 +39,7 @@ namespace SecretSanta.Domain.Services
             DbContext.SaveChanges();
         }
 
-        public void EditGift(Gift gift)
+        public void UpdateGift(Gift gift)
         {
             DbContext.Gifts.Update(gift);
             DbContext.SaveChanges();

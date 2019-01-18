@@ -77,6 +77,31 @@ namespace SecretSanta.Domain.Tests.Models
         }
 
         [TestMethod]
+        public void UpdateUser()
+        {
+            using (var context = new ApplicationDbContext(Options))
+            {
+                UserService service = new UserService(context);
+                var user = CreateUser();
+                var persistedUser = service.AddUser(user);
+
+                var fetchedUser = service.Find(1);
+                fetchedUser.FirstName = "Was Wedge";
+                fetchedUser.LastName = "Now Han";
+                service.UpdateUser(fetchedUser);
+            }
+
+            using (var context = new ApplicationDbContext(Options))
+            {
+                UserService service = new UserService(context);
+                var fetchedUser = service.Find(1);
+
+                Assert.AreEqual("Was Wedge", fetchedUser.FirstName);
+                Assert.AreEqual("Now Han", fetchedUser.LastName);
+            }
+        }
+
+        [TestMethod]
         public void FindUser()
         {
             // arrange
