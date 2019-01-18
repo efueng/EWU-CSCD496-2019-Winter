@@ -16,6 +16,14 @@ namespace SecretSanta.Domain.Services
             DbContext = dbContext;
         }
 
+        public Pairing AddPairing(Pairing pairing)
+        {
+            DbContext.Pairings.Add(pairing);
+            DbContext.SaveChanges();
+
+            return pairing;
+        }
+
         public Pairing Find(int id)
         {
             return DbContext.Pairings.Include(p => p.Recipient)

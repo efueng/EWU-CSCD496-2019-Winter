@@ -72,6 +72,30 @@ namespace SecretSanta.Domain.Tests.Services
         }
 
         [TestMethod]
+        public void AddGiftForUser()
+        {
+            using (var context = new ApplicationDbContext(Options))
+            {
+                GiftService service = new GiftService(context);
+                var gift = CreateNewGift();
+                service.AddGift(gift);
+
+                var newGift = new Gift
+                {
+                    Title = "Another blaster",
+                    OrderOfImportance = 2,
+                    Description = "More toys for Wedge",
+                    Url = "www.morepewpew.com",
+                    User = gift.User
+                };
+
+                service.AddGiftForUser(gift.UserId, newGift);
+
+                Assert.AreEqual(2, gift.User.Gifts.Count);
+            }
+        }
+
+        [TestMethod]
         public void UpdateGift()
         {
             using (var context = new ApplicationDbContext(Options))
@@ -115,10 +139,11 @@ namespace SecretSanta.Domain.Tests.Services
             {
                 GiftService service = new GiftService(context);
                 var fetchedGift = service.Find(1);
-                var User = fetchedGift.User;
-                service.RemoveGiftForUser(User.Id, fetchedGift);
+                var user = fetchedGift.User;
+                service.RemoveGiftForUser(user.Id, fetchedGift);
 
                 Assert.IsNull(service.Find(1));
+                Assert.AreEqual(0, user.Gifts.Count);
             }
         }
 
