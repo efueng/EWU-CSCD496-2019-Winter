@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Net;
+using System.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SecretSanta.Library.Tests
@@ -16,10 +18,18 @@ namespace SecretSanta.Library.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void OpenFile_NullFile_ThrowArgumentException()
+        [DataRow(typeof(ArgumentNullException), null)]
+        [DataRow(typeof(ArgumentException), default(string))]
+        [DataRow(typeof(FileNotFoundException), "nonexistentFile.txt")]
+        [DataRow(typeof(SecurityException), "noReadPermissionsFile.txt")]
+
+        public void OpenFile_NullFile_ThrowSystemException(Type exceptionType, string path)
         {
-            FileImporter.OpenFile(null);
+            try
+            {
+                FileImporter.OpenFile(path);
+            }
+            catch (SystemException exception) when (exception.GetType() == exceptionType) { }
         }
     }
 }
