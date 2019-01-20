@@ -19,7 +19,7 @@ namespace SecretSanta.Library.Tests
 
         [TestMethod]
         [DataRow(typeof(ArgumentNullException), null)]
-        [DataRow(typeof(ArgumentException), default(string))]
+        [DataRow(typeof(ArgumentException), "")]
         [DataRow(typeof(FileNotFoundException), "nonexistentFile.txt")]
         [DataRow(typeof(SecurityException), "noReadPermissionsFile.txt")]
 
