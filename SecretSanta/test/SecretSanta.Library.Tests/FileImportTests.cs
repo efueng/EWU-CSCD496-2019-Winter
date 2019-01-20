@@ -30,7 +30,7 @@ namespace SecretSanta.Library.Tests
                 FileImporter.OpenFile(path);
                 Assert.Fail("Expected exception was not thrown.");
             }
-            catch (Exception exception) { Console.WriteLine($"Exception: {exception.GetType()}\nExpected: {exceptionType}");}// when (exception.GetType() == exceptionType) { }
+            catch (Exception exception) { Console.WriteLine($"Exception: {exception.GetType()}\nExpected: {exceptionType}"); }// when (exception.GetType() == exceptionType) { }
         }
     }
 }
