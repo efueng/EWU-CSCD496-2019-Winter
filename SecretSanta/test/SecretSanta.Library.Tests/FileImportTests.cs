@@ -32,5 +32,11 @@ namespace SecretSanta.Library.Tests
             }
             catch (Exception exception) { Console.WriteLine($"Exception: {exception.GetType()}\nExpected: {exceptionType}"); }// when (exception.GetType() == exceptionType) { }
         }
+
+        [TestMethod]
+        public void MyTestMethod()
+        {
+
+        }
     }
 }
