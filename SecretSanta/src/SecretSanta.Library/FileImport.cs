@@ -8,6 +8,7 @@ namespace SecretSanta.Library
         private FileStream FileStream { get; set; }
         public void OpenFile(string path)
         {
+            Path
             FileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
         }
     }
