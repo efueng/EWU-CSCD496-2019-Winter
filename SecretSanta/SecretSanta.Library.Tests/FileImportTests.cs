@@ -20,8 +20,8 @@ namespace SecretSanta.Library.Tests
         [TestMethod]
         [DataRow(typeof(ArgumentNullException), null)]
         [DataRow(typeof(ArgumentException), default(string))]
-        [DataRow(typeof(FileNotFoundException), "../nonexistentFile.txt")]
-        [DataRow(typeof(SecurityException), "../noReadPermissionsFile.txt")]
+        [DataRow(typeof(FileNotFoundException), "nonexistentFile.txt")]
+        [DataRow(typeof(SecurityException), "noReadPermissionsFile.txt")]
 
         public void OpenFile_ThrowSystemException(Type exceptionType, string path)
         {
