@@ -20,16 +20,17 @@ namespace SecretSanta.Library.Tests
         [TestMethod]
         [DataRow(typeof(ArgumentNullException), null)]
         [DataRow(typeof(ArgumentException), default(string))]
-        [DataRow(typeof(FileNotFoundException), "nonexistentFile.txt")]
-        [DataRow(typeof(SecurityException), "noReadPermissionsFile.txt")]
+        [DataRow(typeof(FileNotFoundException), "../nonexistentFile.txt")]
+        [DataRow(typeof(SecurityException), "../noReadPermissionsFile.txt")]
 
         public void OpenFile_ThrowSystemException(Type exceptionType, string path)
         {
             try
             {
                 FileImporter.OpenFile(path);
+                Assert.Fail("Expected exception was not thrown.");
             }
-            catch (SystemException exception) when (exception.GetType() == exceptionType) { }
+            catch (Exception exception) { Console.WriteLine($"Exception: {exception.GetType()}\nExpected: {exceptionType}");}// when (exception.GetType() == exceptionType) { }
         }
     }
 }
