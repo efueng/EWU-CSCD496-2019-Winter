@@ -69,7 +69,7 @@ namespace SecretSanta.Library.Tests
 
                 Assert.Fail("Expected exception was not thrown.");
             }
-            catch (Exception exception) when (exception.GetType() == exceptionType) { }
+            catch (Exception exception) { Console.WriteLine($"Expected exception: {exceptionType}\nGot: {exception.GetType()}"); }//when (exception.GetType() == exceptionType) { }
 
             //try
             //{
