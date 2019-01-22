@@ -40,16 +40,11 @@ namespace SecretSanta.Library.Tests
                 return path;
             }
         }
-        //private string RelativePath { get; set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-        //    @"..\..\..\.\..\test\data\");
-
-        
 
         [TestInitialize]
         public void TestInitialize()
         {
             FileImporter = new FileImport();
-            //RelativePath = @"test/data/";
         }
 
         //[TestCleanup]

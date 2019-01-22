@@ -23,6 +23,7 @@ namespace SecretSanta.Library
             }
 
             var _path = Path.GetFullPath(Path.Combine(RelativePath, path));
+            Console.WriteLine($"Full path: {_path}");
             FileStream fileStream = new FileStream(_path, FileMode.Open);
 
             return fileStream;
