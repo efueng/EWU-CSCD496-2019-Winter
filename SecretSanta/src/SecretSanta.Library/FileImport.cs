@@ -40,5 +40,15 @@ namespace SecretSanta.Library
 
             return line;
         }
+
+        public bool ParseHeader(string header)
+        {
+            if (header.StartsWith("Name:"))
+            {
+
+            }
+
+            return false;
+        }
     }
 }

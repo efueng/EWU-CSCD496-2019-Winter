@@ -60,15 +60,24 @@ namespace SecretSanta.Library.Tests
         [DataRow(typeof(DirectoryNotFoundException), @"nonexistentFile.txt")]
         public void OpenFile_ThrowSystemException(Type exceptionType, string path)
         {
+            //try
+            //{
+            //    Console.WriteLine($"Path: {path}");
+            //    Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
+            //    FileImporter.OpenFile(path);
+
+            //    Assert.Fail("Expected exception was not thrown.");
+            //}
+            //catch (Exception exception) when (exception.GetType() == exceptionType) { }
+
             try
             {
-                Console.WriteLine($"Path: {path}");
-                Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
                 FileImporter.OpenFile(path);
-                
-                Assert.Fail("Expected exception was not thrown.");
             }
-            catch (Exception exception) when (exception.GetType() == exceptionType) { }
+            catch (SystemException exception)
+            {
+                Assert.AreEqual(exceptionType, exception.GetType());
+            }
         }
 
         [TestMethod]
@@ -82,9 +91,10 @@ namespace SecretSanta.Library.Tests
         }
 
         [TestMethod]
-        public void ParseLine_HeaderImproperFormat()
+        [DataRow("Name: Edmond Dantes")]
+        public void ParseHeader(string header)
         {
-            //FileImporter 
+            Assert.IsTrue(FileImporter.ParseHeader(header));
         }
     }
 }
