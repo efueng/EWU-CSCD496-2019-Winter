@@ -61,7 +61,6 @@ namespace SecretSanta.Library.Tests
                 Console.WriteLine($"Path: {path}");
                 Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
                 FileImporter.OpenFile(path);
-                // Kickstart the buiild
                 Assert.Fail($"Expected exception was not thrown.");
             }
             catch (Exception exception)// when (exception.GetType() != exceptionType) { }// { Console.WriteLine($"Expected exception: {exceptionType}\nGot: {exception.GetType()}"); }
