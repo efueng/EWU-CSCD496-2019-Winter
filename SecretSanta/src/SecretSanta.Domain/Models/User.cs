@@ -21,7 +21,7 @@ namespace SecretSanta.Domain.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("FirstName cannot be null or empty.", "value");
+                    throw new ArgumentException("FirstName cannot be null or empty.", nameof(value));
                 }
 
                 value = value.Trim();
@@ -37,7 +37,7 @@ namespace SecretSanta.Domain.Models
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException("LastName cannot be null or empty.", "value");
+                    throw new ArgumentException("LastName cannot be null or empty.", nameof(value));
                 }
 
                 value = value.Trim();

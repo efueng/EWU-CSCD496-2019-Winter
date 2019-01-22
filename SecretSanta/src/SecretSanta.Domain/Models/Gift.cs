@@ -14,14 +14,14 @@ namespace SecretSanta.Domain.Models
             {
                 if (value is null)
                 {
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
                 }
 
                 value = value.Trim();
 
                 if (value is "")
                 {
-                    throw new ArgumentException("Title cannot be empty.", "value");
+                    throw new ArgumentException("Title cannot be empty.", nameof(value));
                 }
 
                 _Title = value;
@@ -36,7 +36,7 @@ namespace SecretSanta.Domain.Models
             {
                 if (value < 1)
                 {
-                    throw new ArgumentOutOfRangeException("OrderOfImportance must be at least 1.", "value");
+                    throw new ArgumentOutOfRangeException(nameof(value), "OrderOfImportance must be at least 1.");
                 }
 
                 _OrderOfImportance = value;
@@ -51,7 +51,7 @@ namespace SecretSanta.Domain.Models
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException("URL cannot be null or empty.", "value");
+                    throw new ArgumentException("URL cannot be null or empty.", nameof(value));
                 }
 
                 value = value.Trim();
@@ -67,7 +67,7 @@ namespace SecretSanta.Domain.Models
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException("Description cannot be null or empty.", "value");
+                    throw new ArgumentException("Description cannot be null or empty.", nameof(value));
                 }
 
                 value = value.Trim();

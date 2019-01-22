@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SecretSanta.Domain.Models;
 
 namespace SecretSanta.Library.Tests
 {
@@ -84,7 +85,7 @@ namespace SecretSanta.Library.Tests
             UpdateTempFile(tempFile, "Name: Edmond Dantes");
 
             List<string> fileContents;
-            FileImporter.ReadFile(tempFile, out fileContents);
+            FileImport.ReadFile(tempFile, out fileContents);
             DeleteTempFile(tempFile);
             Assert.AreEqual("Name: Edmond Dantes", fileContents[0]);
         }
@@ -93,7 +94,15 @@ namespace SecretSanta.Library.Tests
         [DataRow("Name: Edmond Dantes")]
         public void ParseHeader(string header)
         {
-            Assert.IsTrue(FileImporter.ParseHeader(header));
+            var user = new User("test", "user");
+            try
+            {
+                Assert.IsTrue(FileImport.ParseHeader(header, out user));
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
