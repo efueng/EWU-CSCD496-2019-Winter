@@ -5,12 +5,40 @@ namespace SecretSanta.Library
 {
     public class FileImport
     {
-        private FileStream FileStream { get; set; }
-        public void OpenFile(string path)
+        private string RelativePath
         {
+            get
+            {
+                return Path.Combine(System.Reflection.Assembly.GetExecutingAssembly().Location, @"..\..\..\..\data\");
+            }
+        }
             
-            var _path = Path.GetFullPath(path);
-            FileStream = new FileStream(_path, FileMode.Open, FileAccess.Read);
+
+        public FileStream OpenFile(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                FileStream f = new FileStream(path, FileMode.Open);
+            }
+
+            var _path = Path.GetFullPath(Path.Combine(RelativePath, path));
+            FileStream fileStream = new FileStream(_path, FileMode.Open);
+
+            return fileStream;
+        }
+
+        public string ReadFile(string path)
+        {
+            string line = string.Empty;
+            using (FileStream fileStream = OpenFile(path))
+            {
+                using (StreamReader streamReader = new StreamReader(fileStream))
+                {
+                    line = streamReader.ReadLine();
+                }
+            }
+
+            return line;
         }
     }
 }

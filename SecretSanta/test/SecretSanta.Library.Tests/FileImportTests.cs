@@ -9,34 +9,82 @@ namespace SecretSanta.Library.Tests
     [TestClass]
     public class FileImportTests
     {
-        public FileImport FileImporter { get; set; }
+        void UpdateTempFile(string tempFile, string text)
+        {
+            using (StreamWriter streamWriter = File.AppendText(tempFile))
+            {
+                streamWriter.WriteLine(text);
+            }
+        }
+
+        void DeleteTempFile(string tempFile)
+        {
+            if (File.Exists(tempFile))
+            {
+                File.Delete(tempFile);
+            }
+        }
+
+        private FileImport FileImporter { get; set; }
+        private string TempFile
+        {
+            get
+            {
+                string path = string.Empty;
+
+                path = Path.GetTempFileName();
+                FileInfo fileInfo = new FileInfo(path);
+                fileInfo.Attributes = FileAttributes.Temporary;
+
+                return path;
+            }
+        }
+        //private string RelativePath { get; set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+        //    @"..\..\..\.\..\test\data\");
+
+        
 
         [TestInitialize]
         public void TestInitialize()
         {
             FileImporter = new FileImport();
+            //RelativePath = @"test/data/";
         }
+
+        //[TestCleanup]
+        //public void
 
         [TestMethod]
         [DataRow(typeof(ArgumentNullException), null)]
-        [DataRow(typeof(ArgumentException), "")]
-        [DataRow(typeof(FileNotFoundException), "nonexistentFile.txt")]
-        [DataRow(typeof(SecurityException), "noReadPermissionsFile.txt")]
-
+        [DataRow(typeof(ArgumentException), @"")]
+        [DataRow(typeof(DirectoryNotFoundException), @"nonexistentFile.txt")]
         public void OpenFile_ThrowSystemException(Type exceptionType, string path)
         {
             try
             {
+                Console.WriteLine($"Path: {path}");
+                Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
                 FileImporter.OpenFile(path);
+                
                 Assert.Fail("Expected exception was not thrown.");
             }
-            catch (Exception exception) { Console.WriteLine($"Exception: {exception.GetType()}\nExpected: {exceptionType}"); }// when (exception.GetType() == exceptionType) { }
+            catch (Exception exception) when (exception.GetType() == exceptionType) { }
         }
 
         [TestMethod]
-        public void MyTestMethod()
+        public void OpenAndReadFile()
         {
+            string tempFile = TempFile;
+            UpdateTempFile(tempFile, "This is a test.");
 
+            Assert.AreEqual("This is a test.", FileImporter.ReadFile(tempFile));
+            DeleteTempFile(tempFile);
+        }
+
+        [TestMethod]
+        public void ParseLine_HeaderImproperFormat()
+        {
+            //FileImporter 
         }
     }
 }
