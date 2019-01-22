@@ -49,12 +49,13 @@ namespace SecretSanta.Library
 
         public bool ParseHeader(string header)
         {
-            if (header.StartsWith("Name:"))
-            {
+            //if (header.StartsWith("Name:"))
+            //{
 
-            }
+            //}
 
-            return false;
+            //return false;
+            return header.StartsWith("Name:");
         }
     }
 }
