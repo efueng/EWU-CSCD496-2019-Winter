@@ -32,17 +32,14 @@ namespace SecretSanta.Library
         public string ReadFile(string path, out List<string> fileContents)
         {
             string line = string.Empty;
-            using (FileStream fileStream = OpenFile(path))
+            fileContents = new List<string>();
+            using (StreamReader streamReader = new StreamReader(path))
             {
-                fileContents = new List<string>();
-                using (StreamReader streamReader = new StreamReader(fileStream))
+                while (streamReader.Peek() >= 0)
                 {
-                    while (streamReader.Peek() >= 0)
-                    {
-                        fileContents.Add(streamReader.ReadLine());
-                    }
-                    line = streamReader.ReadLine();
+                    fileContents.Add(streamReader.ReadLine());
                 }
+                line = streamReader.ReadLine();
             }
 
             return line;
