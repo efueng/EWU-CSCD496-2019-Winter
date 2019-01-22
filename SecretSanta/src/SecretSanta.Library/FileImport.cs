@@ -22,27 +22,22 @@ namespace SecretSanta.Library
                 FileStream f = new FileStream(path, FileMode.Open);
             }
 
-            var _path = Path.GetFullPath(Path.Combine(RelativePath, path));
-            Console.WriteLine($"Full path: {_path}");
-            FileStream fileStream = new FileStream(_path, FileMode.Open);
+            var fullPath = Path.GetFullPath(Path.Combine(RelativePath, path));
+            FileStream fileStream = new FileStream(fullPath, FileMode.Open);
 
             return fileStream;
         }
 
-        public string ReadFile(string path, out List<string> fileContents)
+        public void ReadFile(string path, out List<string> fileContents)
         {
-            string line = string.Empty;
             fileContents = new List<string>();
             using (StreamReader streamReader = new StreamReader(path))
             {
-                while (streamReader.Peek() >= 0)
+                while (!streamReader.EndOfStream)
                 {
                     fileContents.Add(streamReader.ReadLine());
                 }
-                line = streamReader.ReadLine();
             }
-
-            return line;
         }
 
         public bool ParseHeader(string header)

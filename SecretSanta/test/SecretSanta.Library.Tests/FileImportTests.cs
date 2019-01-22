@@ -85,7 +85,6 @@ namespace SecretSanta.Library.Tests
 
             List<string> fileContents;
             FileImporter.ReadFile(tempFile, out fileContents);
-            //Assert.AreEqual("This is a test.", FileImporter.ReadFile(tempFile));
             DeleteTempFile(tempFile);
             Assert.AreEqual("Name: Edmond Dantes", fileContents[0]);
         }
