@@ -62,11 +62,11 @@ namespace SecretSanta.Library.Tests
                 Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
                 FileImporter.OpenFile(path);
 
-                Assert.Fail("Expected exception was not thrown.");
+                //Assert.Fail($"Expected exception was not thrown.\nExpected: {exceptionType}");
             }
-            catch (Exception exception) when (exception.GetType() == exceptionType) { }// { Console.WriteLine($"Expected exception: {exceptionType}\nGot: {exception.GetType()}"); }
+            catch (Exception exception)// when (exception.GetType() != exceptionType) { }// { Console.WriteLine($"Expected exception: {exceptionType}\nGot: {exception.GetType()}"); }
             {
-
+                Console.WriteLine($"Expected exception type: {exceptionType}\nCaught: {exception.GetType()}");
             }
             //try
             //{
