@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SecretSanta.Library
@@ -27,13 +28,18 @@ namespace SecretSanta.Library
             return fileStream;
         }
 
-        public string ReadFile(string path)
+        public string ReadFile(string path, out List<string> fileContents)
         {
             string line = string.Empty;
             using (FileStream fileStream = OpenFile(path))
             {
+                fileContents = new List<string>();
                 using (StreamReader streamReader = new StreamReader(fileStream))
                 {
+                    while (streamReader.Peek() >= 0)
+                    {
+                        fileContents.Add(streamReader.ReadLine());
+                    }
                     line = streamReader.ReadLine();
                 }
             }

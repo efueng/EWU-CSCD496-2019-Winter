@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Security;
@@ -60,34 +61,37 @@ namespace SecretSanta.Library.Tests
         [DataRow(typeof(DirectoryNotFoundException), @"nonexistentFile.txt")]
         public void OpenFile_ThrowSystemException(Type exceptionType, string path)
         {
-            //try
-            //{
-            //    Console.WriteLine($"Path: {path}");
-            //    Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
-            //    FileImporter.OpenFile(path);
-
-            //    Assert.Fail("Expected exception was not thrown.");
-            //}
-            //catch (Exception exception) when (exception.GetType() == exceptionType) { }
-
             try
             {
+                Console.WriteLine($"Path: {path}");
+                Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
                 FileImporter.OpenFile(path);
+
+                Assert.Fail("Expected exception was not thrown.");
             }
-            catch (SystemException exception)
-            {
-                Assert.AreEqual(exceptionType, exception.GetType());
-            }
+            catch (Exception exception) when (exception.GetType() == exceptionType) { }
+
+            //try
+            //{
+            //    FileImporter.OpenFile(path);
+            //}
+            //catch (SystemException exception)
+            //{
+            //    Assert.AreEqual(exceptionType, exception.GetType());
+            //}
         }
 
         [TestMethod]
         public void OpenAndReadFile()
         {
             string tempFile = TempFile;
-            UpdateTempFile(tempFile, "This is a test.");
+            UpdateTempFile(tempFile, "Name: Edmond Dantes");
 
-            Assert.AreEqual("This is a test.", FileImporter.ReadFile(tempFile));
+            List<string> fileContents;
+            FileImporter.ReadFile(tempFile, out fileContents);
+            //Assert.AreEqual("This is a test.", FileImporter.ReadFile(tempFile));
             DeleteTempFile(tempFile);
+            Assert.AreEqual("Name: Edmond Dantes", fileContents[0]);
         }
 
         [TestMethod]
