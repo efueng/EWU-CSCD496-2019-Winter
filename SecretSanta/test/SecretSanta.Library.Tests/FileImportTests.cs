@@ -100,6 +100,18 @@ namespace SecretSanta.Library.Tests
             Assert.IsFalse(FileImport.ParseHeader(null, out user));
         }
 
+        [TestMethod]
+        public void Import_PassedGoodInput()
+        {
+            string tempFile = TempFile;
+            UpdateTempFile(tempFile, "Name: Inigo Montoya");
+            var user = FileImporter.Import(tempFile);
+            DeleteTempFile(tempFile);
+
+            Assert.IsNotNull(user);
+            Assert.AreEqual("Inigo", user.FirstName);
+            Assert.AreEqual("Montoya", user.LastName);
+        }
         
     }
 }

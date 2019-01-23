@@ -56,5 +56,16 @@ namespace SecretSanta.Library
             user = null;
             return false;
         }
+
+        public User Import(string path)
+        {
+            User user;
+            List<string> fileContents;
+
+            ReadFile(path, out fileContents);
+            ParseHeader(fileContents[0], out user);
+
+            return user;
+        }
     }
 }
