@@ -48,9 +48,6 @@ namespace SecretSanta.Library.Tests
             FileImporter = new FileImport();
         }
 
-        //[TestCleanup]
-        //public void
-
         [TestMethod]
         public void ReadFile_PassedNullPath_ExpectException()
         {
