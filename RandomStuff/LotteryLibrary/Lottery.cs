@@ -4,7 +4,14 @@ using System.Text;
 
 namespace LotteryLibrary
 {
-    class Lottery
+    public class Lottery
     {
+        public IRandom Rand { get; set; }
+        public Lottery(IRandom obj = null)
+        {
+            Rand = obj ?? new RealRandom();
+        }
+
+
     }
 }

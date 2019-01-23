@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotteryLibrary", "LotteryLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotteryLibrary.Tests", "LotteryLibrary.Tests\LotteryLibrary.Tests.csproj", "{6B73C8F1-1D5E-44EA-9A5B-2FF3ACEE4A35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRandom", "IRandom\IRandom.csproj", "{C10B3EFD-BD05-4015-8D6D-FC009BBACCD9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{6B73C8F1-1D5E-44EA-9A5B-2FF3ACEE4A35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B73C8F1-1D5E-44EA-9A5B-2FF3ACEE4A35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B73C8F1-1D5E-44EA-9A5B-2FF3ACEE4A35}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C10B3EFD-BD05-4015-8D6D-FC009BBACCD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C10B3EFD-BD05-4015-8D6D-FC009BBACCD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C10B3EFD-BD05-4015-8D6D-FC009BBACCD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C10B3EFD-BD05-4015-8D6D-FC009BBACCD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

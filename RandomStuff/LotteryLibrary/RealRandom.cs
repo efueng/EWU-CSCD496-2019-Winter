@@ -2,11 +2,11 @@
 
 namespace LotteryLibrary
 {
-    public class LotteryLibrary : IRandom
+    public class RealRandom : IRandom
     {
         public int Next()
         {
-
+            return new Random().Next();
         }
     }
 }

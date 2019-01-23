@@ -4,7 +4,8 @@ using System.Text;
 
 namespace LotteryLibrary
 {
-    interface IRandom
+    public interface IRandom
     {
+        int Next();
     }
 }
