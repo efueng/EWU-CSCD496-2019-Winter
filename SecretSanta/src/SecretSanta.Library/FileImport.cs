@@ -7,31 +7,15 @@ namespace SecretSanta.Library
 {
     public class FileImport
     {
-        private string RelativePath
+        public void ReadFile(string path, out List<string> fileContents)
         {
-            get
+            if (string.IsNullOrWhiteSpace(path))
             {
-                return Path.Combine(System.Reflection.Assembly.GetExecutingAssembly().Location, @"..\..\..\..\data\");
-            }
-        }
-            
-
-        public FileStream OpenFile(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                FileStream f = new FileStream(path, FileMode.Open);
+                throw new ArgumentException("Path is null or empty.");
             }
 
-            var fullPath = Path.GetFullPath(Path.Combine(RelativePath, path));
-            FileStream fileStream = new FileStream(fullPath, FileMode.Open);
-
-            return fileStream;
-        }
-
-        public static void ReadFile(string path, out List<string> fileContents)
-        {
             fileContents = new List<string>();
+
             using (StreamReader streamReader = new StreamReader(path))
             {
                 while (!streamReader.EndOfStream)
@@ -44,27 +28,26 @@ namespace SecretSanta.Library
         public static bool ParseHeader(string header, out User user)
         {
             user = new User();
-            if (header.StartsWith("Name:"))
+            if (!string.IsNullOrEmpty(header) && header.StartsWith("Name:"))
             {
-                string[] tokenizedHeader = header.Split(':');
                 string[] tokenizedNames;
+
+                string[] tokenizedHeader = header.Split(':');
+                tokenizedHeader[1] = tokenizedHeader[1].Trim();
+                              
+
                 if (tokenizedHeader[1].Contains(","))
                 {
                     tokenizedNames = tokenizedHeader[1].Split(',');
-                    user.FirstName = tokenizedNames[1];
-                    user.LastName = tokenizedNames[0];
-                    Console.WriteLine($"tHeader[0]: {tokenizedHeader[0]}\ntHeader[1]: {tokenizedHeader[1]}");
-                    Console.WriteLine($"tNames[0]: {tokenizedNames[0]}\ntNames[1]: {tokenizedNames[1]}");
+                    user.FirstName = tokenizedNames[1].Trim();
+                    user.LastName = tokenizedNames[0].Trim();
 
                 }
                 else
                 {
                     tokenizedNames = tokenizedHeader[1].Split(' ');
-                    user.FirstName = tokenizedNames[0];
-                    user.LastName = tokenizedNames[1];
-                    Console.WriteLine($"tHeader[0]: {tokenizedHeader[0]}\ntHeader[1]: {tokenizedHeader[1]}");
-                    Console.WriteLine($"tNames[0]: {tokenizedNames[0]}\ntNames[1]: {tokenizedNames[1]}");
-
+                    user.FirstName = tokenizedNames[0].Trim();
+                    user.LastName = tokenizedNames[1].Trim();
                 }
 
                 return true;

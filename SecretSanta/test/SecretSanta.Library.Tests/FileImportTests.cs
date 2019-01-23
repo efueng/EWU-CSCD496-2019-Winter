@@ -52,30 +52,23 @@ namespace SecretSanta.Library.Tests
         //public void
 
         [TestMethod]
-        [DataRow(typeof(ArgumentNullException), null)]
-        [DataRow(typeof(ArgumentException), @"")]
-        [DataRow(typeof(DirectoryNotFoundException), @"nonexistentFile.txt")]
-        public void OpenFile_ThrowSystemException(Type exceptionType, string path)
+        public void ReadFile_PassedNullPath_ExpectException()
         {
-            try
+            List<string> fileContents;
+            Assert.ThrowsException<ArgumentException>(() =>
             {
-                Console.WriteLine($"Path: {path}");
-                Console.WriteLine($"Reflection: {System.Reflection.Assembly.GetExecutingAssembly().Location}");
-                FileImporter.OpenFile(path);
-                Assert.Fail($"Expected exception was not thrown.");
-            }
-            catch (Exception exception)// when (exception.GetType() != exceptionType) { }// { Console.WriteLine($"Expected exception: {exceptionType}\nGot: {exception.GetType()}"); }
+                FileImporter.ReadFile(null, out fileContents);
+            });
+        }
+
+        [TestMethod]
+        public void ReadFile_PassedEmptyPath_ExpectException()
+        {
+            List<string> fileContents;
+            Assert.ThrowsException<ArgumentException>(() =>
             {
-                Console.WriteLine($"Expected exception type: {exceptionType}\nCaught: {exception.GetType()}");
-            }
-            //try
-            //{
-            //    FileImporter.OpenFile(path);
-            //}
-            //catch (SystemException exception)
-            //{
-            //    Assert.AreEqual(exceptionType, exception.GetType());
-            //}
+                FileImporter.ReadFile("", out fileContents);
+            });
         }
 
         [TestMethod]
@@ -85,24 +78,28 @@ namespace SecretSanta.Library.Tests
             UpdateTempFile(tempFile, "Name: Edmond Dantes");
 
             List<string> fileContents;
-            FileImport.ReadFile(tempFile, out fileContents);
+            FileImporter.ReadFile(tempFile, out fileContents);
             DeleteTempFile(tempFile);
+
             Assert.AreEqual("Name: Edmond Dantes", fileContents[0]);
         }
 
         [TestMethod]
         [DataRow("Name: Edmond Dantes")]
+        [DataRow("Name: Dantes, Edmond")]
         public void ParseHeader(string header)
         {
             var user = new User("test", "user");
-            try
-            {
-                Assert.IsTrue(FileImport.ParseHeader(header, out user));
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            Assert.IsTrue(FileImport.ParseHeader(header, out user));
         }
+
+        [TestMethod]
+        public void ParseHeader_PassedNullHeader()
+        {
+            var user = new User();
+            Assert.IsFalse(FileImport.ParseHeader(null, out user));
+        }
+
+        
     }
 }
