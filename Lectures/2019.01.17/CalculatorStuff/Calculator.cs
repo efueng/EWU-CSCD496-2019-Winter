@@ -1,9 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CalculatorStuff
 {
-    public class Calculator
+    public class Calculator : IDisposable
     {
         const string Left = "Left";
         const string Operator = "Operator";
@@ -12,6 +13,12 @@ namespace CalculatorStuff
             @"\s*(?<"+Left+@">\d+)\s*(?<"+Operator+@">\+|-)\s*(?<"+Right+@">\d+)\s*";
 
         public Regex EquationRegEx { get; } = new Regex(EquationPattern);
+
+        public Stream Stream { get; private set; } = new MemoryStream();
+
+        /// <summary>
+        /// TODO: Track instantiate/dispose calls (static instanceCounter)
+        /// </summary>
 
         public int Calculate(string equation)
         {
@@ -49,6 +56,12 @@ namespace CalculatorStuff
                 char.Parse(match.Groups[Operator].Value),
                 int.Parse(match.Groups[Right].Value)
                 );
+        }
+
+        public void Dispose()
+        {
+            Stream?.Dispose();
+            Stream = null;
         }
     }
 }

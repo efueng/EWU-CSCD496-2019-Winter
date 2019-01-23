@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace CalculatorTests
 {
-
     /**
      * 1. Write test that fails to show you need to write some code
      * 2. Write the simplest code to get test to pass.
@@ -16,6 +15,12 @@ namespace CalculatorTests
     [TestClass]
     public class CalculatorTests
     {
+        [ClassCleanup]
+        static public void ClassCleanup()
+        {
+            Assert.AreEqual<int>(0, Calculator.InstanceCount);
+        }
+
         public Calculator Calculator { get; set; }
         [TestInitialize]
         public void TestInitialize()
@@ -94,6 +99,17 @@ namespace CalculatorTests
         {
             Match match = Calculator.EquationRegEx.Match(equation);
             Assert.IsTrue(match.Success);
+        }
+
+        [TestMethod]
+        public void FileStream_DiposeCalled_AssignNull()
+        {
+            Calculator calculator = null;
+            using (calculator = new Calculator())
+            {
+                Assert.IsNotNull(calculator.Stream);
+            }
+            Assert.IsNull(calculator.Stream);
         }
 
     }
