@@ -35,7 +35,7 @@ namespace SecretSanta.Domain.Models
             get => _LastName;
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("LastName cannot be null or empty.", nameof(value));
                 }

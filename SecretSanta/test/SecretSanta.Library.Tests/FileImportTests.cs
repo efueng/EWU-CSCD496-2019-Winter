@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta.Domain.Models;
 
@@ -11,104 +10,120 @@ namespace SecretSanta.Library.Tests
     [TestClass]
     public class FileImportTests
     {
-        void UpdateTempFile(string tempFile, string text)
-        {
-            using (StreamWriter streamWriter = File.AppendText(tempFile))
-            {
-                streamWriter.WriteLine(text);
-            }
-        }
-
-        void DeleteTempFile(string tempFile)
-        {
-            if (File.Exists(tempFile))
-            {
-                File.Delete(tempFile);
-            }
-        }
 
         private FileImport FileImporter { get; set; }
-        private string TempFile
-        {
-            get
-            {
-                string path = string.Empty;
-
-                path = Path.GetTempFileName();
-                FileInfo fileInfo = new FileInfo(path);
-                fileInfo.Attributes = FileAttributes.Temporary;
-
-                return path;
-            }
-        }
+        private static string TempDirectory { get; } = Path.GetTempPath();
 
         [TestInitialize]
         public void TestInitialize()
         {
-            FileImporter = new FileImport();
+            if (File.Exists($"{TempDirectory}/tempFile.txt")) { File.Delete($"{TempDirectory}/tempFile.txt"); }
+            if (File.Exists($"{TempDirectory}/tempFile2.txt")) { File.Delete($"{TempDirectory}/tempFile2.txt"); }
+            if (File.Exists($"{TempDirectory}/tempFile3.txt")) { File.Delete($"{TempDirectory}/tempFile3.txt"); }
+            if (File.Exists($"{TempDirectory}/tempFileWithGifts.txt")) { File.Delete($"{TempDirectory}/tempFileWithGifts.txt"); }
+
+            File.WriteAllLines($"{TempDirectory}/tempFile.txt", new string[] { "Name: Edmond Dantes" });
+            File.WriteAllLines($"{TempDirectory}/tempFile2.txt", new string[] { "Name: Dantes, Edmond" });
+            File.WriteAllLines($"{TempDirectory}/tempFile3.txt", new string[] { "Name:  Edmond Dantes" });
+
+            File.WriteAllLines($"{TempDirectory}/tempFileWithGifts.txt", new string[] { "Name: Edmond Dantes",
+                                                                                        string.Empty,
+                                                                                        "Sword",
+                                                                                        string.Empty,
+                                                                                        "Gold",
+                                                                                        string.Empty,
+                                                                                        "Revenge"});
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            if (File.Exists($"{TempDirectory}/tempFile.txt")) { File.Delete($"{TempDirectory}/tempFile.txt"); }
+            if (File.Exists($"{TempDirectory}/tempFile2.txt")) { File.Delete($"{TempDirectory}/tempFile2.txt"); }
+            if (File.Exists($"{TempDirectory}/tempFile3.txt")) { File.Delete($"{TempDirectory}/tempFile3.txt"); }
+            if (File.Exists($"{TempDirectory}/tempFileWithGifts.txt")) { File.Delete($"{TempDirectory}/tempFileWithGifts.txt"); }
         }
 
         [TestMethod]
-        public void ReadFile_PassedNullPath_ExpectException()
+        [DataRow(null)]
+        [DataRow(" ")]
+        [DataRow(default(string))]
+        [ExpectedException(typeof(ArgumentException), "FilePath cannot be null or empty.")]
+        public void CreateFileImport_PassedNullEmptyWhiteSpace_ExpectsException(string path)
         {
-            List<string> fileContents;
-            Assert.ThrowsException<ArgumentException>(() =>
-            {
-                FileImporter.ReadFile(null, out fileContents);
-            });
+            FileImporter = new FileImport(path);
         }
 
         [TestMethod]
-        public void ReadFile_PassedEmptyPath_ExpectException()
+        [ExpectedException(typeof(FileNotFoundException), "The file does not exist.")]
+        public void CreateFileImport_PassedNonExistentFile_ExpectsException()
         {
-            List<string> fileContents;
-            Assert.ThrowsException<ArgumentException>(() =>
-            {
-                FileImporter.ReadFile("", out fileContents);
-            });
+            FileImporter = new FileImport($"{TempDirectory}/nonExistentFile.txt");
         }
 
         [TestMethod]
-        public void OpenAndReadFile()
+        public void ReadFile_PassedGoodInput()
         {
-            string tempFile = TempFile;
-            UpdateTempFile(tempFile, "Name: Edmond Dantes");
-
-            List<string> fileContents;
-            FileImporter.ReadFile(tempFile, out fileContents);
-            DeleteTempFile(tempFile);
-
+            FileImporter = new FileImport($"{TempDirectory}/tempFileWithGifts.txt");
+            List<string> fileContents = new List<string>();
+            FileImporter.ReadFile(out fileContents);
+            Assert.AreEqual(4, fileContents.Count);
             Assert.AreEqual("Name: Edmond Dantes", fileContents[0]);
+            Assert.AreEqual("Sword", fileContents[1]);
+            Assert.AreEqual("Gold", fileContents[2]);
+            Assert.AreEqual("Revenge", fileContents[3]);
         }
 
         [TestMethod]
         [DataRow("Name: Edmond Dantes")]
         [DataRow("Name: Dantes, Edmond")]
-        public void ParseHeader(string header)
+        public void ParseHeader_PassedValidHeader(string header)
         {
-            var user = new User("test", "user");
-            Assert.IsTrue(FileImport.ParseHeader(header, out user));
+            FileImporter = new FileImport();
+            var user = FileImporter.ParseHeader(header);
+            Assert.AreEqual("Edmond", user.FirstName);
+            Assert.AreEqual("Dantes", user.LastName);
         }
 
         [TestMethod]
-        public void ParseHeader_PassedNullHeader()
+        [DataRow(null)]
+        [DataRow(" ")]
+        [DataRow(default(string))]
+        [ExpectedException(typeof(ArgumentException), "Header cannot be null or empty.")]
+        public void ParseHeader_PassedNullEmptyWhiteSpace_ThrowsException(string header)
         {
-            var user = new User();
-            Assert.IsFalse(FileImport.ParseHeader(null, out user));
+            FileImporter = new FileImport();
+            FileImporter.ParseHeader(header);
         }
 
         [TestMethod]
-        public void Import_PassedGoodInput()
+        [DataRow("name: Edmond Dantes")]
+        [DataRow(" Name: Edmond Dantes")]
+        [DataRow("Name Edmond Dantes")]
+        [DataRow("Name:  Edmond Dantes")]
+        [DataRow("Name: Edmond  Dantes")]
+        [DataRow("Name: Edmond MiddleName Dantes")]
+        [DataRow("Name: R2 D2")]
+        [ExpectedException(typeof(FormatException),
+            "Invalid header format. Headers must follow the format of 'Name: <FirstName> <LastName>'" +
+                    "or 'Name: <LastName>, <FirstName>'.")]
+        public void ParseHeader_PassedInvalidHeaderFormat_ExpectsException(string header)
         {
-            string tempFile = TempFile;
-            UpdateTempFile(tempFile, "Name: Inigo Montoya");
-            var user = FileImporter.Import(tempFile);
-            DeleteTempFile(tempFile);
+            FileImporter = new FileImport();
+            FileImporter.ParseHeader(header);
+        }
+
+        [TestMethod]
+        public void ImportUserAndGifts_PassedGoodInput()
+        {
+            FileImporter = new FileImport($"{TempDirectory}/tempFileWithGifts.txt");
+            var user = FileImporter.ImportUserAndGifts(FileImporter.FilePath);
 
             Assert.IsNotNull(user);
-            Assert.AreEqual("Inigo", user.FirstName);
-            Assert.AreEqual("Montoya", user.LastName);
+            Assert.AreEqual("Edmond", user.FirstName);
+            Assert.AreEqual("Dantes", user.LastName);
+            Assert.AreEqual(3, user.Gifts.Count);
         }
-        
+
     }
 }

@@ -12,17 +12,12 @@ namespace SecretSanta.Domain.Models
             get => _Title;
             set
             {
-                if (value is null)
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentNullException(nameof(value));
+                    throw new ArgumentException("Title of gift cannot be null or empty.", nameof(value));
                 }
 
                 value = value.Trim();
-
-                if (value is "")
-                {
-                    throw new ArgumentException("Title cannot be empty.", nameof(value));
-                }
 
                 _Title = value;
             }
@@ -49,7 +44,7 @@ namespace SecretSanta.Domain.Models
             get => _Url;
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("URL cannot be null or empty.", nameof(value));
                 }
@@ -65,7 +60,7 @@ namespace SecretSanta.Domain.Models
             get => _Description;
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("Description cannot be null or empty.", nameof(value));
                 }

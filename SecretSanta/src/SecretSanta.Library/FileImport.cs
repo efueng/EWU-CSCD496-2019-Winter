@@ -2,68 +2,111 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SecretSanta.Library
 {
     public class FileImport
     {
-        public void ReadFile(string path, out List<string> fileContents)
+        private string _FilePath;
+        public string FilePath
         {
-            if (string.IsNullOrWhiteSpace(path))
+            get => _FilePath;
+            set
             {
-                throw new ArgumentException("Path is null or empty.");
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("FilePath cannot be null or empty.", nameof(value));
+                }
+
+                if (!File.Exists(value))
+                {
+                    throw new FileNotFoundException("The file does not exist.", nameof(value));
+                }
+
+                _FilePath = value;
             }
+        }
 
+        public FileImport() { }
+
+        public FileImport(string filePath)
+        {
+            FilePath = filePath;
+        }
+
+        public void ReadFile(out List<string> fileContents)
+        {
             fileContents = new List<string>();
+            string line = "";
 
-            using (StreamReader streamReader = new StreamReader(path))
+            using (StreamReader streamReader = new StreamReader(FilePath))
             {
                 while (!streamReader.EndOfStream)
                 {
-                    fileContents.Add(streamReader.ReadLine());
+                    line = streamReader.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        fileContents.Add(line);
+                    }
                 }
             }
         }
 
-        public static bool ParseHeader(string header, out User user)
+        public User ParseHeader(string header)
         {
-            user = new User();
-            if (!string.IsNullOrEmpty(header) && header.StartsWith("Name:"))
+            if (string.IsNullOrWhiteSpace(header))
             {
-                string[] tokenizedNames;
-
-                string[] tokenizedHeader = header.Split(':');
-                tokenizedHeader[1] = tokenizedHeader[1].Trim();
-                              
-
-                if (tokenizedHeader[1].Contains(","))
-                {
-                    tokenizedNames = tokenizedHeader[1].Split(',');
-                    user.FirstName = tokenizedNames[1].Trim();
-                    user.LastName = tokenizedNames[0].Trim();
-
-                }
-                else
-                {
-                    tokenizedNames = tokenizedHeader[1].Split(' ');
-                    user.FirstName = tokenizedNames[0].Trim();
-                    user.LastName = tokenizedNames[1].Trim();
-                }
-
-                return true;
+                throw new ArgumentException("Header cannot be null or empty.", nameof(header));
             }
 
-            user = null;
-            return false;
+            string pattern = @"^Name:\s([a-zA-z]{0,50}),?\s([a-zA-Z]{0,50})$";
+            Regex regex = new Regex(pattern);
+            Match match = regex.Match(header);
+
+            if (!match.Success)
+            {
+                throw new FormatException("Invalid header format. Headers must follow the format of 'Name: <FirstName> <LastName>'" +
+                    "or 'Name: <LastName>, <FirstName>'.");
+            }
+
+            string[] tokenizedNames;
+
+            User user = new User();
+            string[] tokenizedHeader = header.Split(':');
+
+            tokenizedHeader[1] = tokenizedHeader[1].Trim();
+
+            if (tokenizedHeader[1].Contains(","))
+            {
+                tokenizedNames = tokenizedHeader[1].Split(',');
+                user.FirstName = tokenizedNames[1];
+                user.LastName = tokenizedNames[0];
+
+            }
+            else
+            {
+                tokenizedNames = tokenizedHeader[1].Split(' ');
+                user.FirstName = tokenizedNames[0];
+                user.LastName = tokenizedNames[1];
+            }
+
+            return user;
         }
 
-        public User Import(string path)
+        public User ImportUserAndGifts(string path)
         {
             User user;
             List<string> fileContents;
 
-            ReadFile(path, out fileContents);
-            ParseHeader(fileContents[0], out user);
+            ReadFile(out fileContents);
+            user = ParseHeader(fileContents[0]);
+
+            for (int idx = 1; idx < fileContents.Count; idx++)
+            {
+                user.Gifts.Add(new Gift { Title = fileContents[idx] });
+            }
 
             return user;
         }
