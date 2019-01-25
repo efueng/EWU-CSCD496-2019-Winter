@@ -329,4 +329,9 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
+<<<<<<< HEAD
 Lectures/
+=======
+# Mac specific files
+.DS_Store
+>>>>>>> upstream/master
