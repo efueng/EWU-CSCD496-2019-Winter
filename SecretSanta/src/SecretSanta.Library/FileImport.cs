@@ -110,5 +110,20 @@ namespace SecretSanta.Library
 
             return user;
         }
+
+        // completely ripped off from Cameron Osborne
+        public List<Gift> GetGiftsForUser(User user)
+        {
+            return File.ReadLines(FilePath)
+                .Skip(1)
+                .Select(line => line.Trim())
+                .Where(line => !string.IsNullOrEmpty(line))
+                .Select(line => new Gift
+                {
+                    Title = line,
+                    User = user
+                })
+                .ToList();
+        }
     }
 }

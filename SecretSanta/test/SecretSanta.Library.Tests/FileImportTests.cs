@@ -125,5 +125,19 @@ namespace SecretSanta.Library.Tests
             Assert.AreEqual(3, user.Gifts.Count);
         }
 
+        [TestMethod]
+        public void GetGiftsForUser_PassedValidUser()
+        {
+            FileImporter = new FileImport($"{TempDirectory}/tempFileWithGifts.txt");
+            var user = FileImporter.ImportUserAndGifts(FileImporter.FilePath);
+
+            List<Gift> gifts = FileImporter.GetGiftsForUser(user);
+
+            Assert.AreEqual(3, gifts.Count);
+            Assert.AreEqual("Sword", gifts[0].Title);
+            Assert.AreEqual("Gold", gifts[1].Title);
+            Assert.AreEqual("Revenge", gifts[2].Title);
+        }
+
     }
 }
