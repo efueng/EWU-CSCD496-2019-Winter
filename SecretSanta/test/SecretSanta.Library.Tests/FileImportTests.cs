@@ -138,6 +138,5 @@ namespace SecretSanta.Library.Tests
             Assert.AreEqual("Gold", gifts[1].Title);
             Assert.AreEqual("Revenge", gifts[2].Title);
         }
-
     }
 }
