@@ -12,7 +12,7 @@ namespace SecretSanta.Api.DTO
 
         public Gift()
         {
-                
+              
         }
 
         public Gift(SecretSanta.Domain.Models.Gift gift)
