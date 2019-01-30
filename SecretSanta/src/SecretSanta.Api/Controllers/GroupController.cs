@@ -19,35 +19,51 @@ namespace SecretSanta.Api.Controllers
             _GroupService = groupService ?? throw new ArgumentNullException(nameof(groupService));
         }
 
-        // PUT api/Group/someValue
-        [HttpPut("{groupId}")]
-        public ActionResult<DTO.Group> AddGroup(Group group)
+        private Group GroupDtoToEntity(DTO.Group dto)
         {
-            if (group == null)
+            Group entity = new Group
             {
-                throw new ArgumentNullException(nameof(group));
-            }
+                Id = dto.Id,
+                Name = dto.Name,
+                GroupUsers = new List<GroupUser>()
+            };
 
-            return new DTO.Group(_GroupService.AddGroup(group));
+            return entity;
         }
 
-        // PUT api/Group/someValue
-        [HttpPut("{groupId}")]
-        public ActionResult<DTO.Group> UpdateGroup(Group group)
+        // PUT api/Group
+        [HttpPut]
+        public ActionResult AddGroup(DTO.Group dtoGroup)
         {
-            if (group == null)
+            if (dtoGroup == null)
             {
-                throw new ArgumentNullException(nameof(group));
+                return BadRequest("dtoGroup parameter was null on call to GroupController.AddGroup(DTO.Group dtoGroup).");
             }
 
-            return new DTO.Group(_GroupService.UpdateGroup(group));
+            _GroupService.AddGroup(GroupDtoToEntity(dtoGroup));
+
+            return Ok();
         }
 
-        // PUT api/Group/someValue
-        //[HttpGet("{groupId}")]
-        //public ActionResult<List<DTO.Group>> FetchAll()
-        //{
+        // PUT api/Group
+        [HttpPut]
+        public ActionResult UpdateGroup(DTO.Group dtoGroup)
+        {
+            if (dtoGroup == null)
+            {
+                return BadRequest("dtoGroup parameter was null on call to GroupController.UpdateGroup(DTO.Group dtoGroup).");
+            }
+            
+            _GroupService.AddGroup(GroupDtoToEntity(dtoGroup));
 
-        //}
+            return Ok();
+        }
+
+        // GET api/Group
+        [HttpGet]
+        public ActionResult<List<DTO.Group>> FetchAll()
+        {
+            return _GroupService.FetchAll().Select(x => new DTO.Group(x)).ToList();
+        }
     }
 }

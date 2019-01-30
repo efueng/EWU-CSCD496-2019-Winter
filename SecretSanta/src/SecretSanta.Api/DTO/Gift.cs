@@ -25,5 +25,10 @@ namespace SecretSanta.Api.DTO
             OrderOfImportance = gift.OrderOfImportance;
             Url = gift.Url;
         }
+
+        public static Gift ToDTO(int userId, SecretSanta.Domain.Models.Gift gift)
+        {
+            return null;
+        }
     }
 }

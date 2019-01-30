@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SecretSanta.Domain.Services
 {
-    interface IUserService
+    public interface IUserService
     {
         User AddUser(User user);
         User UpdateUser(User user);
