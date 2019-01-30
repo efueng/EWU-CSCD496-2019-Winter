@@ -14,6 +14,7 @@ namespace SecretSanta.Api.Tests
             throw new System.NotImplementedException();
         }
 
+
         public List<Gift> GetGiftsForUser_Return { get; set; }
         public int GetGiftsForUser_UserId { get; set; }
         public List<Gift> GetGiftsForUser(int userId)
@@ -22,14 +23,22 @@ namespace SecretSanta.Api.Tests
             return GetGiftsForUser_Return;
         }
 
+
+        public Gift RemoveGift_Gift { get; set; }
         public void RemoveGift(Gift gift)
         {
-            throw new System.NotImplementedException();
+            RemoveGift_Gift = gift;
         }
 
+
+        public int UpdateGiftForUser_userId { get; set; }
+        public Gift UpdateGiftForUser_Gift { get; set; }
         public Gift UpdateGiftForUser(int userId, Gift gift)
         {
-            throw new System.NotImplementedException();
+            UpdateGiftForUser_userId = userId;
+            UpdateGiftForUser_Gift = gift;
+
+            return UpdateGiftForUser_Gift;
         }
     }
 }
