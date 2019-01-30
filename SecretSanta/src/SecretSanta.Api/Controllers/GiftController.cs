@@ -18,13 +18,27 @@ namespace SecretSanta.Api.Controllers
             _GiftService = giftService ?? throw new ArgumentNullException(nameof(giftService));
         }
 
+        private Gift GiftDtoToEntity(DTO.Gift dto)
+        {
+            Gift entity = new Gift
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Description = dto.Description,
+                OrderOfImportance = dto.OrderOfImportance,
+                Url = dto.Url
+            };
+
+            return entity;
+        }
+
         // GET api/Gift/5
         [HttpGet("{userId}")]
         public ActionResult<List<DTO.Gift>> GetGiftForUser(int userId)
         {
             if (userId <= 0)
             {
-                return NotFound();
+                return NotFound("UserId must be greater than zero in GiftController.GetGiftForUser(int userId).");
             }
             List<Gift> databaseUsers = _GiftService.GetGiftsForUser(userId);
 
@@ -33,45 +47,42 @@ namespace SecretSanta.Api.Controllers
 
         // PUT api/Gift/somevalue
         [HttpPut("{userId}")]
-        public ActionResult<DTO.Gift> AddGiftToUser(int userId, DTO.Gift gift)
+        public ActionResult AddGiftToUser(int userId, DTO.Gift gift)
         {
-            if (userId <= 0) return NotFound();
+            if (userId <= 0) return NotFound("UserId must be greater than zero in GiftController.AddGiftToUser(int userId, DTO.Gift dto).");
 
-            Gift domainGift = new Gift
-            {
-                UserId = userId,
-                Title = gift.Title,
-                Description = gift.Description,
-                Url = gift.Url,
-                OrderOfImportance = gift.OrderOfImportance
-            };
+            if (gift == null) return BadRequest("Gift was null upon calling GiftController.AddGiftToUser(int userId, DTO.Gift dto).");
 
-            _GiftService.AddGiftToUser(userId, domainGift);
-            return gift;
-            //return new DTO.Gift(_GiftService.AddGiftToUser(userId, domainGift));
+            var entity = GiftDtoToEntity(gift);
+            _GiftService.AddGiftToUser(userId, entity);
+
+            return Ok();
         }
 
         // PATCH? api/Gift/somevalue
-        [HttpPatch("{userId}")]
-        public ActionResult<DTO.Gift> UpdateGiftForUser(int userId, Gift gift)
+        [HttpPut("{userId}")]
+        public ActionResult UpdateGiftForUser(int userId, DTO.Gift gift)
         {
             if (userId <= 0) return NotFound();
 
-            return new DTO.Gift(_GiftService.UpdateGiftForUser(userId, gift));
+            var entity = GiftDtoToEntity(gift);
+            _GiftService.UpdateGiftForUser(userId, entity);
+
+            return Ok();
         }
 
         // POST api/Gift/somevalue
         [HttpDelete("{userId}")]
-        public void RemoveGiftForUser(int userId, Gift gift)
+        public ActionResult RemoveGiftForUser(int userId, DTO.Gift gift)
         {
-            //if (userId <= 0)
-            List<Gift> userGifts = _GiftService.GetGiftsForUser(userId);
-            
-            //foreach (Gift g in userGifts) _GiftService.RemoveGift(g);
-            //userGifts.Select(g => _GiftService.RemoveGift(g));
-            //List<DTO.Gift> dtoGifts = userGifts.Select(ug => new DTO.Gift(ug)).ToList();
-            //dtoGifts.Select(dg => _GiftService.RemoveGift((Gift)dg));
-            //_GiftService.RemoveGift(gift);
+            if (userId <= 0) return NotFound();
+            if (gift == null) return BadRequest();
+
+            var entity = GiftDtoToEntity(gift);
+            entity.UserId = userId;
+            _GiftService.RemoveGift(entity);
+
+            return Ok();
         }
     }
 }

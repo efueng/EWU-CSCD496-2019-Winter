@@ -31,7 +31,7 @@ namespace SecretSanta.Api.Tests
             };
             var testService = new TestableGiftService
             {
-                ToReturn =  new List<Gift>
+                GetGiftsForUser_Return =  new List<Gift>
                 {
                     gift
                 }
@@ -60,6 +60,31 @@ namespace SecretSanta.Api.Tests
             Assert.IsTrue(result.Result is NotFoundResult);
             //This check ensures that the service was not called
             Assert.AreEqual(0, testService.GetGiftsForUser_UserId);
+        }
+
+        [TestMethod]
+        public void AddGiftToUser_RequiresGift()
+        {
+            var testService = new TestableGiftService();
+            var controller = new GiftController(testService);
+
+            ActionResult<DTO.Gift> result = controller.AddGiftToUser(4, null);
+
+            Assert.IsTrue(condition: result.GetType() == typeof(DTO.Gift));
+
+            // this check ensure that the service was not called
+            Assert.AreEqual(0, testService.AddGiftToUser_UserId);
+        }
+
+        [TestMethod]
+        public void AddGiftToUser_InvokesService()
+        {
+            var testService = new TestableGiftService();
+            var controller = new GiftController(testService);
+
+            ActionResult<DTO.Gift> result = controller.AddGiftToUser(4, new DTO.Gift());
+            OkResult okResult = result as OkResult;
+            Assert.IsNotNull(result, "Result was not a 200");
         }
     }
 }

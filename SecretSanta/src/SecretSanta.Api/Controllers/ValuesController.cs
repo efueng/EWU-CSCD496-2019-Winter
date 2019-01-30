@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SecretSanta.Domain.Models;
 using System.Collections.Generic;
 
 namespace SecretSanta.Api.Controllers
@@ -7,6 +8,18 @@ namespace SecretSanta.Api.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        //private readonly ApplicationDbContext _Context;
+        //public ValuesController(ApplicationDbContext context)
+        //{
+        //    _Context = context;
+        //}
+
+        //[HttpGet]
+        //public ActionResult Foo()
+        //{
+        //    return Ok();
+        //}
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
