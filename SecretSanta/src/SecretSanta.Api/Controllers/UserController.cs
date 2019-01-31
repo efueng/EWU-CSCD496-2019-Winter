@@ -55,6 +55,19 @@ namespace SecretSanta.Api.Controllers
             return Ok();
         }
 
+        // DELETE api/User/5
+        public ActionResult RemoveUser(DTO.User dtoUser)
+        {
+            if (dtoUser == null)
+            {
+                return BadRequest("dtoUser parameter was null on call to UserController.DeleteUser(DTO.User dtoUser).");
+            }
+
+            _UserService.RemoveUser(UserDtoToEntity(dtoUser));
+
+            return Ok();
+        }
+
         // GET api/User
         public ActionResult<List<DTO.User>> FetchAll()
         {

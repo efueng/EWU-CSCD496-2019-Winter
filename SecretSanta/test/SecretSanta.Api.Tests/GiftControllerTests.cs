@@ -83,7 +83,7 @@ namespace SecretSanta.Api.Tests
             var controller = new GiftController(testService);
 
             ActionResult result = controller.AddGiftToUser(4, new DTO.Gift());
-            OkResult okResult = result as OkResult;
+            Assert.IsTrue(result is OkResult);
             Assert.IsNotNull(result, "Result was not a 200");
         }
     }
