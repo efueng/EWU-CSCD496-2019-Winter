@@ -16,7 +16,7 @@ namespace SecretSanta.Api.Controllers
         
         public UserController(IUserService userService)
         {
-            _UserService = userService;
+            _UserService = userService ?? throw new ArgumentNullException(nameof(UserService));
         }
 
         private User UserDtoToEntity(DTO.User dto)
@@ -60,7 +60,7 @@ namespace SecretSanta.Api.Controllers
         {
             if (dtoUser == null)
             {
-                return BadRequest("dtoUser parameter was null on call to UserController.DeleteUser(DTO.User dtoUser).");
+                return BadRequest();
             }
 
             _UserService.RemoveUser(UserDtoToEntity(dtoUser));

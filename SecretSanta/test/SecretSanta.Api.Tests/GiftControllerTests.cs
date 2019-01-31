@@ -23,7 +23,7 @@ namespace SecretSanta.Api.Tests
         {
             Mocker = new AutoMocker();
             GiftServiceMock = Mocker.GetMock<IGiftService>();
-            //GiftControllerMock = Mocker.CreateInstance<GiftController>();
+            //UserControllerMock = Mocker.CreateInstance<GiftController>();
         }
 
         [TestMethod]
@@ -138,7 +138,7 @@ namespace SecretSanta.Api.Tests
         {
             var gift = Mocker.CreateInstance<DTO.Gift>();
             //var entity = Mocker.CreateInstance<Gift>();
-            //GiftServiceMock.Setup(x => x.RemoveGift(entity))
+            //UserServiceMock.Setup(x => x.RemoveGift(entity))
             //    .Verifiable();
 
             GiftServiceMock.Setup(x => x.RemoveGift(It.IsAny<Gift>()))
@@ -159,7 +159,7 @@ namespace SecretSanta.Api.Tests
         {
             var gift = Mocker.CreateInstance<DTO.Gift>();
             //var entity = Mocker.CreateInstance<Gift>();
-            //GiftServiceMock.Setup(x => x.RemoveGift(entity))
+            //UserServiceMock.Setup(x => x.RemoveGift(entity))
             //    .Verifiable();
 
             GiftServiceMock.Setup(x => x.RemoveGift(It.IsAny<Gift>()))
@@ -199,7 +199,7 @@ namespace SecretSanta.Api.Tests
             var dto = strictMocker.CreateInstance<DTO.Gift>();
 
             service.Setup(x => x.UpdateGiftForUser(1, It.IsAny<Gift>()))
-                .Returns(new Gift())
+                .Returns(new Gift()) // this is wrong and temporary magic. This just makes things work for some reason
                 .Verifiable();
             
             var result = controller.UpdateGiftForUser(1, dto);
