@@ -2,13 +2,8 @@ using SecretSanta.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-<<<<<<<
-
-=======
 using Microsoft.EntityFrameworkCore;
 using SecretSanta.Domain.Models;
->>>>>>>
-
 namespace SecretSanta.Domain.Services
 {
     public class GroupService : IGroupService
@@ -73,6 +68,25 @@ namespace SecretSanta.Domain.Services
                 .SelectMany(g => g.GroupUsers)
                 .Select(g => g.User)
                 .ToList();
+        }
+
+        public List<User> FetchAllGroupUsers(int groupId)
+        {
+            if (groupId <= 0)
+            {
+                throw new ArgumentException("groupId <= 0 on call to GroupService.FetchAllGroupUsers(int groupId).", nameof(groupId));
+            }
+
+            return DbContext.Groups
+                .Where(g => g.Id == groupId)
+                .SelectMany(g => g.GroupUsers)
+                .Select(g => g.User)
+                .ToList();
+        }
+
+        public List<User> FetchAllGroupUsers(Group group)
+        {
+            throw new NotImplementedException();
         }
     }
 }
