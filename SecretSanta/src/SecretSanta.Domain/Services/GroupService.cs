@@ -2,8 +2,6 @@ using SecretSanta.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using SecretSanta.Domain.Models;
 namespace SecretSanta.Domain.Services
 {
     public class GroupService : IGroupService
@@ -44,11 +42,56 @@ namespace SecretSanta.Domain.Services
         {
             if (groupId <= 0)
             {
-                throw new ArgumentException("groupId <= 0 on call to GroupService.AddGroupUser(int groupId, User user).");
+                throw new ArgumentException("groupId <= 0 on call to GroupService.AddGroupUser(int groupId, User user).",
+                    nameof(groupId));
             }
 
-            //DbContext.Groups.Select
-            return null;
+            if (user == null)
+            {
+                throw new ArgumentNullException("user was null on call to GroupService.AddGroupUser(int groupId, User user).",
+                    nameof(user));
+            }
+
+            var group = DbContext.Groups.Single(g => g.Id == groupId);
+
+            var groupUser = new GroupUser
+            {
+                GroupId = groupId,
+                User = user,
+                UserId = user.Id
+            };
+
+            group?.GroupUsers?.Add(groupUser);
+            DbContext.SaveChanges();
+            
+            return user;
+        }
+
+        public void RemoveGroupUser(int groupId, User user)
+        {
+            if (groupId <= 0)
+            {
+                throw new ArgumentException("groupId <= 0 on call to GroupService.RemoveGroupUser(int groupId, User user).",
+                    nameof(groupId));
+            }
+
+            if (user == null)
+            {
+                throw new ArgumentNullException("user was null on call to GroupService.RemoveGroupUser(int groupId, User user).",
+                    nameof(user));
+            }
+
+            var group = DbContext.Groups.Single(g => g.Id == groupId);
+
+            var groupUser = new GroupUser
+            {
+                GroupId = groupId,
+                User = user,
+                UserId = user.Id
+            };
+
+            group?.GroupUsers?.Remove(groupUser);
+            DbContext.SaveChanges();
         }
 
         public List<Group> FetchAll()
@@ -56,37 +99,19 @@ namespace SecretSanta.Domain.Services
             return DbContext.Groups.ToList();
         }
 
-        public List<User> GetUsers(int groupId)
-        {
-            if (groupId <= 0)
-            {
-                throw new ArgumentException("groupId <= 0 on call to GroupService.FetchAllGroupUsers(int groupId).", nameof(groupId));
-            }
-
-            return DbContext.Groups
-                .Where(g => g.Id == groupId)
-                .SelectMany(g => g.GroupUsers)
-                .Select(g => g.User)
-                .ToList();
-        }
-
         public List<User> FetchAllGroupUsers(int groupId)
         {
             if (groupId <= 0)
             {
-                throw new ArgumentException("groupId <= 0 on call to GroupService.FetchAllGroupUsers(int groupId).", nameof(groupId));
+                throw new ArgumentException("groupId <= 0 on call to GroupService.FetchAllGroupUsers(int groupId).",
+                    nameof(groupId));
             }
 
             return DbContext.Groups
-                .Where(g => g.Id == groupId)
-                .SelectMany(g => g.GroupUsers)
+                .Where(g => g.Id == groupId)?
+                .SelectMany(g => g.GroupUsers)?
                 .Select(g => g.User)
                 .ToList();
-        }
-
-        public List<User> FetchAllGroupUsers(Group group)
-        {
-            throw new NotImplementedException();
         }
     }
 }
