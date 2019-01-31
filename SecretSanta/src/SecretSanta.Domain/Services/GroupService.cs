@@ -45,6 +45,17 @@ namespace SecretSanta.Domain.Services
             DbContext.SaveChanges();
         }
 
+        public User AddGroupUser(int groupId, User user)
+        {
+            if (groupId <= 0)
+            {
+                throw new ArgumentException("groupId <= 0 on call to GroupService.AddGroupUser(int groupId, User user).");
+            }
+
+            //DbContext.Groups.Select
+            return null;
+        }
+
         public List<Group> FetchAll()
         {
             return DbContext.Groups.ToList();
@@ -52,10 +63,15 @@ namespace SecretSanta.Domain.Services
 
         public List<User> GetUsers(int groupId)
         {
+            if (groupId <= 0)
+            {
+                throw new ArgumentException("groupId <= 0 on call to GroupService.FetchAllGroupUsers(int groupId).", nameof(groupId));
+            }
+
             return DbContext.Groups
-                .Where(x => x.Id == groupId)
-                .SelectMany(x => x.GroupUsers)
-                .Select(x => x.User)
+                .Where(g => g.Id == groupId)
+                .SelectMany(g => g.GroupUsers)
+                .Select(g => g.User)
                 .ToList();
         }
     }
