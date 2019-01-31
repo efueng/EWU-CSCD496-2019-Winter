@@ -46,8 +46,8 @@ namespace SecretSanta.Api.Controllers
             return databaseUsers.Select(x => new DTO.Gift(x)).ToList();
         }
 
-        // PUT api/Gift/somevalue
-        [HttpPut("{userId}")]
+        // POST api/Gift/somevalue
+        [HttpPost("{userId}")]
         public ActionResult AddGiftToUser(int userId, DTO.Gift gift)
         {
             if (userId <= 0) return NotFound();

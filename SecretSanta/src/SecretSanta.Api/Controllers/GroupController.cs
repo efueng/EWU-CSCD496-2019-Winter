@@ -31,8 +31,8 @@ namespace SecretSanta.Api.Controllers
             return entity;
         }
 
-        // PUT api/Group
-        [HttpPut]
+        // POST api/Group
+        [HttpPost]
         public ActionResult AddGroup(DTO.Group dtoGroup)
         {
             if (dtoGroup == null)

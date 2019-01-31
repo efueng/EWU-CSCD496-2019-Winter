@@ -33,8 +33,8 @@ namespace SecretSanta.Api.Controllers
             return entity;
         }
 
-        // PUT api/User
-        [HttpPut]
+        // POST api/User
+        [HttpPost]
         public ActionResult AddUser(DTO.User dtoUser)
         {
             if (dtoUser == null) return BadRequest();
@@ -55,7 +55,8 @@ namespace SecretSanta.Api.Controllers
             return Ok();
         }
 
-        // DELETE api/User/5
+        // DELETE api/User
+        [HttpDelete]
         public ActionResult RemoveUser(DTO.User dtoUser)
         {
             if (dtoUser == null)
@@ -69,6 +70,7 @@ namespace SecretSanta.Api.Controllers
         }
 
         // GET api/User
+        [HttpGet]
         public ActionResult<List<DTO.User>> FetchAll()
         {
             return _UserService.FetchAll().Select(x => new DTO.User(x)).ToList();

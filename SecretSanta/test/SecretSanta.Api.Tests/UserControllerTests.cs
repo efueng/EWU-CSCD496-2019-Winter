@@ -116,7 +116,42 @@ namespace SecretSanta.Api.Tests
                 .Verifiable();
 
             var result = controller.FetchAll();
-            Assert.IsTrue(result.Value.GetType() == typeof(List<DTO.User>));
+            Assert.IsTrue(result.Value is List<DTO.User>);
+            UserServiceMock.VerifyAll();
         }
+
+        //[TestMethod]
+        //public void FetchAll_AddingRealUsersFirst_ReturnsListOfUsers()
+        //{
+        //    var controller = new UserController(UserServiceMock.Object);
+
+        //    var user = Mock.Of<DTO.User>
+        //    (u =>
+        //        u.FirstName == "User" &&
+        //        u.LastName == "One"
+        //    );
+
+        //    var user2 = Mock.Of<DTO.User>
+        //    (u =>
+        //        u.FirstName == "User" &&
+        //        u.LastName == "Two"
+        //    );
+
+        //    controller.AddUser(user);
+        //    controller.AddUser(user2);
+
+        //    UserServiceMock.Setup(x => x.FetchAll())
+        //        .Returns(new List<User>())
+        //        .Verifiable();
+
+        //    var result = controller.FetchAll();
+
+        //    Assert.IsTrue(result.Value is List<DTO.User>);
+        //    //Assert.AreEqual(result.Value?[0]?.LastName, "One");
+        //    //Assert.AreEqual(result.Value?[0]?.Id, 1);
+        //    //Assert.AreEqual(result.Value?[1]?.LastName, "Two");
+        //    //Assert.AreEqual(result.Value?[1]?.Id, 2);
+        //    Assert.IsTrue(result.Value.Count > 0);
+        //}
     }
 }
