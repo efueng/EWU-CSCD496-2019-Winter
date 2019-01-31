@@ -59,6 +59,20 @@ namespace SecretSanta.Api.Controllers
             return Ok();
         }
 
+        // DELETE api/Group/
+        [HttpDelete]
+        public ActionResult RemoveGroup(DTO.Group dtoGroup)
+        {
+            if (dtoGroup == null)
+            {
+                return BadRequest("dtoGroup parameter was null on call to GroupController.RemoveGroup(DTO.Group dtoGroup).");
+            }
+
+            _GroupService.RemoveGroup(GroupDtoToEntity(dtoGroup));
+
+            return Ok();
+        }
+
         // GET api/Group
         [HttpGet]
         public ActionResult<List<DTO.Group>> FetchAll()

@@ -9,6 +9,7 @@ namespace SecretSanta.Domain.Services
     {
         User AddUser(User user);
         User UpdateUser(User user);
+        void RemoveUser(User user);
         List<User> FetchAll();
     }
 }

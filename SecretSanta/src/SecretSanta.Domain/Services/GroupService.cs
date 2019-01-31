@@ -2,6 +2,12 @@ using SecretSanta.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+<<<<<<<
+
+=======
+using Microsoft.EntityFrameworkCore;
+using SecretSanta.Domain.Models;
+>>>>>>>
 
 namespace SecretSanta.Domain.Services
 {
@@ -26,6 +32,17 @@ namespace SecretSanta.Domain.Services
             DbContext.Groups.Update(@group);
             DbContext.SaveChanges();
             return @group;
+        }
+
+        public void RemoveGroup(Group @group)
+        {
+            if (@group == null)
+            {
+                throw new ArgumentNullException(nameof(@group));
+            }
+
+            DbContext.Remove(@group);
+            DbContext.SaveChanges();
         }
 
         public List<Group> FetchAll()
