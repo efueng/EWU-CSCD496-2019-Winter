@@ -54,7 +54,7 @@ namespace SecretSanta.Api.Tests
             var controllerMock = mocker.CreateInstance<GiftController>();
 
             //giftServiceMock.Setup(x => x.GetGiftsForUser(-1))
-            //    .Returns(ActionResult)
+            //    .Returns(NotFoundResult)
             //    .Verifiable();
 
             //var notFound = Act
@@ -62,7 +62,7 @@ namespace SecretSanta.Api.Tests
             
             Assert.IsTrue(result.Result is NotFoundResult);
             mocker.VerifyAll();
-            giftServiceMock.VerifyAll();
+            //giftServiceMock.Verify(x => x.GetGiftsForUser(-1), Times.Never);
         }
 
         [TestMethod]
@@ -101,19 +101,24 @@ namespace SecretSanta.Api.Tests
         [TestMethod]
         public void AddGiftToUser_RequiresGift()
         {
-            //var testService = new TestableGiftService();
-            //var controller = new GiftController(testService);
-
-            //ActionResult<DTO.Gift> result = controller.AddGiftToUser(4, null);
-
-            //Assert.IsTrue(condition: result.GetType() == typeof(DTO.Gift));
-
-            //// this check ensure that the service was not called
-            //Assert.AreEqual(0, testService.AddGiftToUser_UserId);
-
             var controllerMock = Mocker.CreateInstance<GiftController>();
-            var result = controllerMock.AddGiftToUser(4, null);
+            var result = controllerMock.AddGiftToUser(1, null);
             Assert.IsTrue(result is BadRequestResult);
+            
+        }
+
+        [TestMethod]
+        public void AddGiftToUser_NegativeUserId_ReturnsNotFound()
+        {
+            var strictMocker = new AutoMocker(MockBehavior.Strict);
+            var controller = strictMocker.CreateInstance<GiftController>();
+            var service = Mocker.GetMock<IGiftService>();
+
+            service.Setup(x => x.AddGiftToUser(-1, It.IsAny<Gift>())).Verifiable();
+            var result = controller.AddGiftToUser(-1, It.IsAny<DTO.Gift>());
+            Assert.IsTrue(result is NotFoundResult);
+            strictMocker.VerifyAll();
+            service.Verify(x => x.AddGiftToUser(-1, It.IsAny<Gift>()), Times.Never);
         }
 
         [TestMethod]
@@ -140,10 +145,68 @@ namespace SecretSanta.Api.Tests
                 .Verifiable();
 
             var controllerMock = new GiftController(GiftServiceMock.Object);
-            var result = controllerMock.RemoveGiftForUser(1, gift);
+            var result = controllerMock.RemoveGiftForUser(gift);
 
             Assert.IsTrue(result is OkResult);
             Mocker.VerifyAll();
+
+            // Check ensure service was invoked only once. Is this necessary?
+            GiftServiceMock.Verify(x => x.RemoveGift(It.IsAny<Gift>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void RemoveGiftForUser_NegativeUserId_ReturnsNotFound()
+        {
+            var gift = Mocker.CreateInstance<DTO.Gift>();
+            //var entity = Mocker.CreateInstance<Gift>();
+            //GiftServiceMock.Setup(x => x.RemoveGift(entity))
+            //    .Verifiable();
+
+            GiftServiceMock.Setup(x => x.RemoveGift(It.IsAny<Gift>()))
+                .Verifiable();
+
+            var controllerMock = new GiftController(GiftServiceMock.Object);
+            var result = controllerMock.RemoveGiftForUser(null);
+
+            Assert.IsTrue(result is BadRequestResult);
+            //Mocker.VerifyAll();
+
+            // This check ensures the service was not called
+            GiftServiceMock.Verify(x => x.RemoveGift(It.IsAny<Gift>()), Times.Never);
+            //Mocker.VerifyAll();
+        }
+
+        [TestMethod]
+        public void UpdateGiftForUser_RequiresPositiveUserId()
+        {
+            var strictMocker = new AutoMocker(MockBehavior.Strict);
+            var controller = strictMocker.CreateInstance<GiftController>();
+            var service = Mocker.GetMock<IGiftService>();
+
+            service.Setup(x => x.UpdateGiftForUser(-1, It.IsAny<Gift>())).Verifiable();
+            var result = controller.UpdateGiftForUser(-1, It.IsAny<DTO.Gift>());
+            Assert.IsTrue(result is NotFoundResult);
+            strictMocker.VerifyAll();
+            service.Verify(x => x.UpdateGiftForUser(-1, It.IsAny<Gift>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void UpdateGiftForUser_ReturnsOkResult()
+        {
+            var strictMocker = new AutoMocker(MockBehavior.Strict);
+            var controller = strictMocker.CreateInstance<GiftController>();
+            var service = strictMocker.GetMock<IGiftService>();
+            var dto = strictMocker.CreateInstance<DTO.Gift>();
+
+            service.Setup(x => x.UpdateGiftForUser(1, It.IsAny<Gift>()))
+                .Returns(new Gift())
+                .Verifiable();
+            
+            var result = controller.UpdateGiftForUser(1, dto);
+
+            Assert.IsTrue(result is OkResult);
+            strictMocker.VerifyAll();
+            service.Verify(x => x.UpdateGiftForUser(1, It.IsAny<Gift>()), Times.Once);
         }
     }
 }

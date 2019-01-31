@@ -74,13 +74,13 @@ namespace SecretSanta.Api.Controllers
 
         // POST api/Gift/somevalue
         [HttpDelete("{userId}")]
-        public ActionResult RemoveGiftForUser(int userId, DTO.Gift gift)
+        public ActionResult RemoveGiftForUser( DTO.Gift gift)
         {
-            if (userId <= 0) return NotFound();
+            //if (userId <= 0) return NotFound();
             if (gift == null) return BadRequest();
 
             var entity = GiftDtoToEntity(gift);
-            entity.UserId = userId;
+            //entity.UserId = userId;
             _GiftService.RemoveGift(entity);
 
             return Ok();
