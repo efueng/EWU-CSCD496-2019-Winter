@@ -66,6 +66,39 @@ namespace SecretSanta.Api.Tests
         }
 
         [TestMethod]
+        public void GetGiftsForUser_ReturnsListOfGifts()
+        {
+            var gift = Mock.Of<Gift>();
+            gift.Id = 1;
+            gift.Title = "Test Gift";
+            gift.Description = "A fake gift.";
+            gift.UserId = 42;
+            gift.Url = "fake.net";
+            gift.OrderOfImportance = 1;
+            
+
+            List<Gift> giftList = new List<Gift>();
+            giftList.Add(gift);
+
+            GiftServiceMock.Setup(x => x.GetGiftsForUser(1))
+                .Returns(giftList)
+                .Verifiable();
+
+            //var controller = Mocker.CreateInstance<GiftController>();
+            var controllerMock = new GiftController(GiftServiceMock.Object);
+            var result = controllerMock.GetGiftForUser(1);
+            var resultDTO = result.Value.Single();
+
+            Assert.AreEqual(gift.Id, resultDTO.Id);
+            Assert.AreEqual(gift.Title, resultDTO.Title);
+            Assert.AreEqual(gift.Description, resultDTO.Description);
+            Assert.AreEqual(gift.Url, resultDTO.Url);
+            Assert.AreEqual(gift.OrderOfImportance, resultDTO.OrderOfImportance);
+            Mocker.VerifyAll();
+            GiftServiceMock.VerifyAll();
+        }
+
+        [TestMethod]
         public void AddGiftToUser_RequiresGift()
         {
             //var testService = new TestableGiftService();
@@ -93,6 +126,24 @@ namespace SecretSanta.Api.Tests
             ActionResult result = controller.AddGiftToUser(4, new DTO.Gift());
             Assert.IsTrue(result is OkResult);
             Assert.IsNotNull(result, "Result was not a 200");
+        }
+
+        [TestMethod]
+        public void RemoveGiftForUser()
+        {
+            var gift = Mocker.CreateInstance<DTO.Gift>();
+            //var entity = Mocker.CreateInstance<Gift>();
+            //GiftServiceMock.Setup(x => x.RemoveGift(entity))
+            //    .Verifiable();
+
+            GiftServiceMock.Setup(x => x.RemoveGift(It.IsAny<Gift>()))
+                .Verifiable();
+
+            var controllerMock = new GiftController(GiftServiceMock.Object);
+            var result = controllerMock.RemoveGiftForUser(1, gift);
+
+            Assert.IsTrue(result is OkResult);
+            Mocker.VerifyAll();
         }
     }
 }
