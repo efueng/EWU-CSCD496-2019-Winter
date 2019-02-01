@@ -35,10 +35,7 @@ namespace SecretSanta.Api.Controllers
         [HttpPost]
         public ActionResult AddGroup(DTO.Group dtoGroup)
         {
-            if (dtoGroup == null)
-            {
-                return BadRequest("dtoGroup parameter was null on call to GroupController.AddGroup(DTO.Group dtoGroup).");
-            }
+            if (dtoGroup == null) return BadRequest();
 
             _GroupService.AddGroup(GroupDtoToEntity(dtoGroup));
 
@@ -49,11 +46,8 @@ namespace SecretSanta.Api.Controllers
         [HttpPut]
         public ActionResult UpdateGroup(DTO.Group dtoGroup)
         {
-            if (dtoGroup == null)
-            {
-                return BadRequest("dtoGroup parameter was null on call to GroupController.UpdateGroup(DTO.Group dtoGroup).");
-            }
-            
+            if (dtoGroup == null) return BadRequest();
+
             _GroupService.AddGroup(GroupDtoToEntity(dtoGroup));
 
             return Ok();
@@ -63,10 +57,7 @@ namespace SecretSanta.Api.Controllers
         [HttpDelete]
         public ActionResult RemoveGroup(DTO.Group dtoGroup)
         {
-            if (dtoGroup == null)
-            {
-                return BadRequest("dtoGroup parameter was null on call to GroupController.RemoveGroup(DTO.Group dtoGroup).");
-            }
+            if (dtoGroup == null) return BadRequest();
 
             _GroupService.RemoveGroup(GroupDtoToEntity(dtoGroup));
 
