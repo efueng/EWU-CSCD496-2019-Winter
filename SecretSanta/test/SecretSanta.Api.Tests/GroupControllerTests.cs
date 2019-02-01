@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.AutoMock;
 using SecretSanta.Api.Controllers;
@@ -35,7 +36,8 @@ namespace SecretSanta.Api.Tests
         [TestMethod]
         public void AddGroup_NullGroup_ReturnsBadRequestResult()
         {
-            GroupControllerMock.Object.AddGroup(null);
+            var result = GroupControllerMock.Object.AddGroup(null);
+            Assert.IsTrue(result is BadRequestResult);
         }
     }
 }
