@@ -17,10 +17,5 @@ namespace SecretSanta.Domain.Services
         {
             return null;
         }
-
-        //public List<User> FetchAllGroupUsers(Group group)
-        //{
-        //    return DbContext.GroupUsers
-        //}
     }
 }

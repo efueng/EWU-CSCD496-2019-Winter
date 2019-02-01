@@ -33,7 +33,6 @@ namespace SecretSanta.Api.Tests
             Mocker = new AutoMocker();
             GroupServiceMock = Mocker.GetMock<IGroupService>();
             GroupControllerMock = new GroupController(GroupServiceMock.Object);
-            //UserControllerMock = new UserController(UserServiceMock.Object);
         }
 
         [TestMethod]
@@ -54,10 +53,15 @@ namespace SecretSanta.Api.Tests
         [TestMethod]
         public void AddGroup_MockGroup_ReturnsOkResult()
         {
+            // Arrange
             var groupMock = MakeMockDTO();
-            var result = GroupControllerMock.AddGroup(groupMock);
-            Assert.IsTrue(result is OkResult);
 
+            // Act
+            var result = GroupControllerMock.AddGroup(groupMock);
+
+            // Assert
+            Assert.IsTrue(result is OkResult);
+            Mocker.VerifyAll();
         }
 
         [TestMethod]
@@ -83,13 +87,12 @@ namespace SecretSanta.Api.Tests
         {
             // Arrange
             var dtoGroup = MakeMockDTO();
-
+            
             // Act
             var result = GroupControllerMock.UpdateGroup(dtoGroup);
 
             // Assert
             Assert.IsTrue(result is OkResult);
-            Mocker.VerifyAll();
         }
 
         [TestMethod]

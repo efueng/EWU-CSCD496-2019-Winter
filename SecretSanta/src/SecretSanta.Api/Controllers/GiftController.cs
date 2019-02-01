@@ -38,7 +38,6 @@ namespace SecretSanta.Api.Controllers
         {
             if (userId <= 0)
             {
-                //return NotFound("UserId must be greater than zero in GiftController.GetGiftForUser(int userId).");
                 return NotFound();
             }
             List<Gift> databaseUsers = _GiftService.GetGiftsForUser(userId);
@@ -60,7 +59,7 @@ namespace SecretSanta.Api.Controllers
             return Ok();
         }
 
-        // PATCH? api/Gift/somevalue
+        // PUT api/Gift/somevalue
         [HttpPut("{userId}")]
         public ActionResult UpdateGiftForUser(int userId, DTO.Gift gift)
         {

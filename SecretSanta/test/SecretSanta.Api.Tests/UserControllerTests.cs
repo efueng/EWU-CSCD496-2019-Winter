@@ -16,14 +16,14 @@ namespace SecretSanta.Api.Tests
     {
         private AutoMocker Mocker { get; set; }
         private Mock<IUserService> UserServiceMock { get; set; }
-        private Mock<UserController> UserControllerMock { get; set; }
+        private UserController UserControllerMock { get; set; }
 
         [TestInitialize]
         public void TestInitialize()
         {
             Mocker = new AutoMocker();
             UserServiceMock = Mocker.GetMock<IUserService>();
-            //UserControllerMock = new UserController(UserServiceMock.Object);
+            UserControllerMock = new UserController(UserServiceMock.Object);
         }
 
         [TestMethod]
@@ -60,13 +60,9 @@ namespace SecretSanta.Api.Tests
         [TestMethod]
         public void UpdateUser_NullUser_ReturnsBadRequestResult()
         {
-            //var controller = new UserController(UserServiceMock.Object);
-            //UserServiceMock.Setup(x => x.UpdateUser(It.IsAny<User>())).Verifiable();
             var controller = Mocker.CreateInstance<UserController>();
             var result = controller.UpdateUser(null);
             Assert.IsTrue(result is BadRequestResult);
-
-            //UserServiceMock.Verify(x => x.UpdateUser(null), Times.Never);
         }
 
         [TestMethod]
@@ -109,7 +105,6 @@ namespace SecretSanta.Api.Tests
         public void FetchAll_ReturnsListOfUsers()
         {
             var controller = new UserController(UserServiceMock.Object);
-            //var userList = Mocker.CreateInstance<List<User>>();
 
             UserServiceMock.Setup(x => x.FetchAll())
                 .Returns(new List<User>())
@@ -119,39 +114,6 @@ namespace SecretSanta.Api.Tests
             Assert.IsTrue(result.Value is List<DTO.User>);
             UserServiceMock.VerifyAll();
         }
-
-        //[TestMethod]
-        //public void FetchAll_AddingRealUsersFirst_ReturnsListOfUsers()
-        //{
-        //    var controller = new UserController(UserServiceMock.Object);
-
-        //    var user = Mock.Of<DTO.User>
-        //    (u =>
-        //        u.FirstName == "User" &&
-        //        u.LastName == "One"
-        //    );
-
-        //    var user2 = Mock.Of<DTO.User>
-        //    (u =>
-        //        u.FirstName == "User" &&
-        //        u.LastName == "Two"
-        //    );
-
-        //    controller.AddUser(user);
-        //    controller.AddUser(user2);
-
-        //    UserServiceMock.Setup(x => x.FetchAll())
-        //        .Returns(new List<User>())
-        //        .Verifiable();
-
-        //    var result = controller.FetchAll();
-
-        //    Assert.IsTrue(result.Value is List<DTO.User>);
-        //    //Assert.AreEqual(result.Value?[0]?.LastName, "One");
-        //    //Assert.AreEqual(result.Value?[0]?.Id, 1);
-        //    //Assert.AreEqual(result.Value?[1]?.LastName, "Two");
-        //    //Assert.AreEqual(result.Value?[1]?.Id, 2);
-        //    Assert.IsTrue(result.Value.Count > 0);
-        //}
+        
     }
 }
