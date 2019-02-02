@@ -6,7 +6,7 @@ using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace SecretSanta.Api.Controllers
 {
     [Route("api/[controller]")]
