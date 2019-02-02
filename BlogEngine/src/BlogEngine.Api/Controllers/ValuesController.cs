@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BlogEngine.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,14 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlogEngine.Api.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class PostsController : Controller
+    // [ApiController]
+    public class ValuesController : ControllerBase
     {
-        private IPostService PostService { get; }
-        public PostsController(IPostService postService)
-        {
-            PostService = postService;
-        }
         // GET: api/<controller>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -32,16 +26,9 @@ namespace BlogEngine.Api.Controllers
             return "value";
         }
 
-        // GET api/<controller>/5
-        [HttpGet("user/{userId}")]
-        public string GetPosts(int userId)
-        {
-            return "blah";
-        }
-
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post(MyClass value)
         {
         }
 
@@ -56,5 +43,11 @@ namespace BlogEngine.Api.Controllers
         public void Delete(int id)
         {
         }
+    }
+
+    public class MyClass
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
     }
 }

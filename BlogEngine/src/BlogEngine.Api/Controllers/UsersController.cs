@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BlogEngine.Api.ViewModels;
+using BlogEngine.Domain.Models;
 using BlogEngine.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,13 +17,17 @@ namespace BlogEngine.Api.Controllers
     public class UsersController : Controller
     {
         private IUserService UserService { get; }
-        public UsersController(IUserService userService)
+        private IMapper Mapper { get; }
+        public UsersController(IUserService userService, IMapper mapper)
         {
             UserService = userService;
+            Mapper = mapper;
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(200)]
         public ActionResult<UserViewModel> Get(int id)
         {
             var foundUser = UserService.Find(id);
@@ -30,7 +36,7 @@ namespace BlogEngine.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(UserViewModel.ToViewModel(foundUser));
+            return Ok(Mapper.Map<UserViewModel>(foundUser));
         }
 
         // POST api/<controller>
@@ -42,9 +48,9 @@ namespace BlogEngine.Api.Controllers
                 return BadRequest();
             }
 
-            var persistedUser = UserService.AddUser(UserInputViewModel.ToModel(viewModel));
+            var persistedUser = UserService.AddUser(Mapper.Map<User>(viewModel));
 
-            return Ok(UserViewModel.ToViewModel(persistedUser));
+            return Ok(Mapper.Map<UserViewModel>(persistedUser));
         }
 
         // PUT api/<controller>/5
@@ -57,8 +63,10 @@ namespace BlogEngine.Api.Controllers
                 return BadRequest();
             }
 
-            foundUser.FirstName = viewModel.FirstName;
-            foundUser.LastName = viewModel.LastName;
+            Mapper.Map(viewModel, foundUser);
+
+            //foundUser.FirstName = viewModel.FirstName;
+            //foundUser.LastName = viewModel.LastName;
 
             var persistedUser = UserService.UpdateUser(foundUser);
 

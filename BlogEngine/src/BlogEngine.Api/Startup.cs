@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using BlogEngine.Domain.Models;
 using BlogEngine.Domain.Services;
 using BlogEngine.Domain.Services.Interfaces;
@@ -13,7 +15,9 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using Swashbuckle.AspNetCore.Swagger;
+
 
 namespace BlogEngine.Api
 {
@@ -33,12 +37,11 @@ namespace BlogEngine.Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPostService, PostService>();
 
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
             services.AddDbContext<ApplicationDbContext>(builder =>
             {
-                builder.UseSqlite(connection);
+                builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -46,6 +49,12 @@ namespace BlogEngine.Api
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
+
+            var dependencyContext = DependencyContext.Default;
+            var assemblies = dependencyContext.RuntimeLibraries.SelectMany(lib =>
+                lib.GetDefaultAssemblyNames(dependencyContext)
+                    .Where(a => a.Name.Contains("BlogEngine")).Select(Assembly.Load)).ToArray();
+            services.AddAutoMapper(assemblies);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

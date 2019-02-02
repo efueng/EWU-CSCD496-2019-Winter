@@ -12,6 +12,7 @@ namespace BlogEngine.Api.Tests.Controllers
     [TestClass]
     public class UsersControllerTests
     {
+        /*
         [TestMethod]
         public void AddUser_AddedSuccessfully()
         {
@@ -49,5 +50,6 @@ namespace BlogEngine.Api.Tests.Controllers
 
             Assert.IsTrue(result.Result is BadRequestResult);
         }
+        */
     }
 }

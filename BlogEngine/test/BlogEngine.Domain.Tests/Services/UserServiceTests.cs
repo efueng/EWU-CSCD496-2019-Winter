@@ -92,6 +92,40 @@ namespace BlogEngine.Domain.Tests.Services
         }
 
         [TestMethod]
+        public void UpdateUser()
+        {
+            // arrange
+            using (var context = new ApplicationDbContext(Options))
+            {
+                UserService service = new UserService(context);
+                var myUser = CreateUser();
+
+                var persistedUser = service.AddUser(myUser);
+            }
+
+            // act
+            using (var context = new ApplicationDbContext(Options))
+            {
+                UserService service = new UserService(context);
+                var fetchedUser = service.Find(1);
+
+                fetchedUser.FirstName = "Princess";
+                fetchedUser.LastName = "Buttercup";
+
+                var updatedUser = service.UpdateUser(fetchedUser);
+
+                Assert.AreEqual(fetchedUser, updatedUser);
+
+                var fetchedAgain = service.Find(1);
+                Assert.AreEqual(fetchedAgain, updatedUser);
+
+                updatedUser.LastName = "Stokes";
+
+                Assert.AreEqual(fetchedAgain.LastName, updatedUser.LastName);
+            }
+        }
+
+        [TestMethod]
         public void FindUser()
         {
             // arrange
