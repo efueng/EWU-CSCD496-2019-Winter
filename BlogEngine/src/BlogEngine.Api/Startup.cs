@@ -39,10 +39,17 @@ namespace BlogEngine.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPostService, PostService>();
 
+            var connection = new SqliteConnection("Data Source=:memory:");
+            connection.Open();
             services.AddDbContext<ApplicationDbContext>(builder =>
             {
-                builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                builder.UseSqlite(connection);
             });
+
+            //services.AddDbContext<ApplicationDbContext>(builder =>
+            //{
+            //    builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+            //});
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
