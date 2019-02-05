@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta.Api.Controllers;
 using SecretSanta.Api.ViewModels;
 using SecretSanta.Domain.Models;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace SecretSanta.Api.Tests.Controllers
     [TestClass]
     public class GiftControllerTests
     {
+        //private Mapper Mapper { get; } = new AutoMapper.Mapper();
         [TestMethod]
         public void GetGiftForUser_ReturnsUsersFromService()
         {
