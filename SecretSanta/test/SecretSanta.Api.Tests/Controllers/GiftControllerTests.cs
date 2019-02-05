@@ -14,7 +14,6 @@ namespace SecretSanta.Api.Tests.Controllers
     [TestClass]
     public class GiftControllerTests
     {
-        //private Mapper Mapper { get; } = new AutoMapper.Mapper();
         [TestMethod]
         public void GetGiftForUser_ReturnsUsersFromService()
         {

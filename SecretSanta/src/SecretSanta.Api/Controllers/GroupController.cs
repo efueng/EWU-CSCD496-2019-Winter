@@ -24,7 +24,8 @@ namespace SecretSanta.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<GroupViewModel>> GetAllGroups()
         {
-            return new ActionResult<IEnumerable<GroupViewModel>>(GroupService.FetchAll().Select(x => GroupViewModel.ToViewModel(x)));
+            return new ActionResult<IEnumerable<GroupViewModel>>(GroupService.FetchAll().Select(x => AutoMapper(x)));
+            //return new ActionResult<IEnumerable<GroupViewModel>>(GroupService.FetchAll().Select(x => GroupViewModel.ToViewModel(x)));
         }
 
         // POST api/group
