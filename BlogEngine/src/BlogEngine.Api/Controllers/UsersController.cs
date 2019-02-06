@@ -52,7 +52,7 @@ namespace BlogEngine.Api.Controllers
 
             var persistedUser = UserService.AddUser(Mapper.Map<User>(viewModel));
 
-            return CreatedAtAction(nameof(Get), new { id = persistedUser.Id }, persistedUser);
+            return CreatedAtAction(nameof(Get), new { id = persistedUser.Id }, Mapper.Map<UserViewModel>(persistedUser));
             //return Ok(Mapper.Map<UserViewModel>(persistedUser));
         }
 
