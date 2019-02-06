@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogEngine.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190131233116_TitleNotRequired")]
-    partial class TitleNotRequired
+    [Migration("20190205231558_MadePostTitleUnique")]
+    partial class MadePostTitleUnique
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,17 +43,21 @@ namespace BlogEngine.Domain.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<bool?>("IsPublished");
+                    b.Property<bool>("IsPublished");
 
                     b.Property<DateTime?>("PostedOn");
 
                     b.Property<string>("Slug");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .IsRequired();
 
                     b.Property<int>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 

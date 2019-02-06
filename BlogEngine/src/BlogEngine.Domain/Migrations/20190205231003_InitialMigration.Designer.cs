@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogEngine.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190131232918_InitialDb")]
-    partial class InitialDb
+    [Migration("20190205231003_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,14 +43,13 @@ namespace BlogEngine.Domain.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<bool?>("IsPublished");
+                    b.Property<bool>("IsPublished");
 
                     b.Property<DateTime?>("PostedOn");
 
                     b.Property<string>("Slug");
 
-                    b.Property<string>("Title")
-                        .IsRequired();
+                    b.Property<string>("Title");
 
                     b.Property<int>("UserId");
 

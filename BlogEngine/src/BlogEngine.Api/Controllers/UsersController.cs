@@ -26,8 +26,6 @@ namespace BlogEngine.Api.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(200)]
         public ActionResult<UserViewModel> Get(int id)
         {
             var foundUser = UserService.Find(id);
@@ -43,6 +41,10 @@ namespace BlogEngine.Api.Controllers
         [HttpPost]
         public ActionResult<UserViewModel> Post(UserInputViewModel viewModel)
         {
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest();
+            //}
             if (viewModel == null)
             {
                 return BadRequest();
@@ -50,7 +52,8 @@ namespace BlogEngine.Api.Controllers
 
             var persistedUser = UserService.AddUser(Mapper.Map<User>(viewModel));
 
-            return Ok(Mapper.Map<UserViewModel>(persistedUser));
+            return CreatedAtAction(nameof(Get), new { id = persistedUser.Id }, persistedUser);
+            //return Ok(Mapper.Map<UserViewModel>(persistedUser));
         }
 
         // PUT api/<controller>/5
@@ -65,12 +68,9 @@ namespace BlogEngine.Api.Controllers
 
             Mapper.Map(viewModel, foundUser);
 
-            //foundUser.FirstName = viewModel.FirstName;
-            //foundUser.LastName = viewModel.LastName;
-
             var persistedUser = UserService.UpdateUser(foundUser);
 
-            return Ok(UserViewModel.ToViewModel(persistedUser));
+            return Ok(Mapper.Map<UserViewModel>(persistedUser));
         }
 
         // DELETE api/<controller>/5

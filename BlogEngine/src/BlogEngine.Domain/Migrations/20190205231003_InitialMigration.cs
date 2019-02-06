@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlogEngine.Domain.Migrations
 {
-    public partial class InitialDb : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,10 +40,10 @@ namespace BlogEngine.Domain.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true),
                     PostedOn = table.Column<DateTime>(nullable: true),
-                    IsPublished = table.Column<bool>(nullable: true),
+                    IsPublished = table.Column<bool>(nullable: false),
                     Slug = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },

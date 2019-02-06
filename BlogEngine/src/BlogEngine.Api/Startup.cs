@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Swashbuckle.AspNetCore.Swagger;
 
-
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace BlogEngine.Api
 {
     public class Startup
@@ -39,17 +39,10 @@ namespace BlogEngine.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPostService, PostService>();
 
-            var connection = new SqliteConnection("Data Source=:memory:");
-            connection.Open();
             services.AddDbContext<ApplicationDbContext>(builder =>
             {
-                builder.UseSqlite(connection);
+                builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
-
-            //services.AddDbContext<ApplicationDbContext>(builder =>
-            //{
-            //    builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
-            //});
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
