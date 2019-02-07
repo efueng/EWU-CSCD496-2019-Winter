@@ -7,7 +7,7 @@ using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-[assembly: ApiConventionType(typeof(DefaultApiConventions))]
+// [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace SecretSanta.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -15,23 +15,30 @@ namespace SecretSanta.Api.Controllers
     public class GiftController : ControllerBase
     {
         private IGiftService GiftService { get; }
+        private IMapper Mapper { get; }
 
-        public GiftController(IGiftService giftService)
+        public GiftController(IGiftService giftService, IMapper mapper)
         {
             GiftService = giftService;
+            Mapper = Mapper;
         }
 
         // GET api/Gift/5
         [HttpGet("{userId}")]
-        public ActionResult<List<GiftViewModel>> GetGiftForUser(int userId)
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        [Produces(typeof(List<GiftViewModel>))]
+        public IActionResult GetGiftForUser(int userId)
         {
             if (userId <= 0)
             {
                 return NotFound();
             }
             List<Gift> databaseUsers = GiftService.GetGiftsForUser(userId);
-            return databaseUsers.Select(x => Mapper.Map<Gift, GiftViewModel>(x)).ToList();
-            //return databaseUsers.Select(x => GiftViewModel.ToViewModel(x)).ToList();
+
+            return Ok(databaseUsers
+                .Select(du => Mapper.Map<GiftViewModel>(du))
+                .ToList());
         }
     }
 }

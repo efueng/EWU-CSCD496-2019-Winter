@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SecretSanta.Api.ViewModels;
+using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,38 +13,51 @@ using SecretSanta.Domain.Services.Interfaces;
 namespace SecretSanta.Api.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class GroupController : ControllerBase
     {
         private IGroupService GroupService { get; }
+        private IMapper Mapper { get; }
 
-        public GroupController(IGroupService groupService)
+        public GroupController(IGroupService groupService, IMapper mapper)
         {
-            GroupService = groupService ?? throw new ArgumentNullException(nameof(groupService));
+            GroupService = groupService;
+            Mapper = Mapper;
         }
 
         // GET api/group
         [HttpGet]
-        public ActionResult<IEnumerable<GroupViewModel>> GetAllGroups()
+        [ProducesResponseType(200)]
+        [Produces(typeof(IEnumerable<GroupViewModel>))]
+        public IActionResult GetAllGroups()
         {
-            return new ActionResult<IEnumerable<GroupViewModel>>(GroupService.FetchAll().Select(x => AutoMapper(x)));
-            //return new ActionResult<IEnumerable<GroupViewModel>>(GroupService.FetchAll().Select(x => GroupViewModel.ToViewModel(x)));
+            return Ok(GroupService
+                .FetchAll()
+                .Select(gs => Mapper.Map<GroupViewModel>(gs)));
         }
 
         // POST api/group
         [HttpPost]
-        public ActionResult<GroupViewModel> CreateGroup(GroupInputViewModel viewModel)
+        [ProducesResponseType(200)] // ask why the assembly level directive doesn't work here, while it works above
+        [ProducesResponseType(400)]
+        [Produces(typeof(GroupViewModel))]
+        public IActionResult PostCreateGroup(GroupInputViewModel viewModel)
         {
             if (viewModel == null)
             {
                 return BadRequest();
             }
 
-            return GroupViewModel.ToViewModel(GroupService.AddGroup(GroupInputViewModel.ToModel(viewModel)));
+            return Ok(Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
         }
 
         // PUT api/group/5
         [HttpPut("{id}")]
-        public ActionResult<GroupViewModel> UpdateGroup(int id, GroupInputViewModel viewModel)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [Produces(typeof(GroupViewModel))]
+        public IActionResult PutUpdateGroup(int id, GroupInputViewModel viewModel)
         {
             if (viewModel == null)
             {
@@ -56,11 +71,14 @@ namespace SecretSanta.Api.Controllers
 
             fetchedGroup.Name = viewModel.Name;
 
-            return GroupViewModel.ToViewModel(GroupService.UpdateGroup(fetchedGroup));
+            return Ok(Mapper.Map<GroupViewModel>(GroupService.UpdateGroup(fetchedGroup)));
         }
 
         [HttpPut("{groupId}/{userid}")]
-        public ActionResult AddUserToGroup(int groupId, int userId)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult PutAddUserToGroup(int groupId, int userId)
         {
             if (groupId <= 0)
             {
@@ -81,7 +99,10 @@ namespace SecretSanta.Api.Controllers
 
         // DELETE api/group/5
         [HttpDelete("{id}")]
-        public ActionResult DeleteGroup(int id)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteGroup(int id)
         {
             if (id <= 0)
             {
