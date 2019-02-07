@@ -28,7 +28,7 @@ namespace SecretSanta.Api.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         [Produces(typeof(List<GiftViewModel>))]
-        public IActionResult GetGiftForUser(int userId)
+        public IActionResult Get(int userId)
         {
             if (userId <= 0)
             {
