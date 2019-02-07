@@ -27,12 +27,12 @@ namespace SecretSanta.Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddScoped<IGiftService, GiftService>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IUserService, UserService>();
 
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
             services.AddDbContext<ApplicationDbContext>(builder =>
             {
-                builder.UseSqlite(connection);
+                builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
