@@ -14,6 +14,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Linq;
 using System.Reflection;
 
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace SecretSanta.Api
 {
     public class Startup
@@ -46,9 +47,11 @@ namespace SecretSanta.Api
             });
 
             var dependencyContext = DependencyContext.Default;
+
             var assemblies = dependencyContext.RuntimeLibraries.SelectMany(lib =>
                 lib.GetDefaultAssemblyNames(dependencyContext)
                     .Where(a => a.Name.Contains("SecretSanta")).Select(Assembly.Load)).ToArray();
+
             services.AddAutoMapper(assemblies);
         }
 

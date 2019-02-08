@@ -23,6 +23,10 @@ namespace SecretSanta.Api.Tests.Controllers
     {
         private CustomWebApplicationFactory<Startup> Factory { get; set; }
 
+        public UserControllerTests()
+        {
+            Factory = new CustomWebApplicationFactory<Startup>();
+        }
         [TestMethod]
         public void AddUser_FailsDueToMissingFirstName()
         {
@@ -79,26 +83,26 @@ namespace SecretSanta.Api.Tests.Controllers
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
-        //[TestMethod]
-        //public async Task AddUserViaApi_CompletesSuccessfully()
-        //{
-        //    var client = Factory.CreateClient();
+        [TestMethod]
+        public async Task AddUserViaApi_CompletesSuccessfully()
+        {
+            var client = Factory.CreateClient();
 
-        //    var userViewModel = new UserInputViewModel
-        //    {
-        //        FirstName = "Inigo",
-        //        LastName = "Montoya"
-        //    };
+            var userViewModel = new UserInputViewModel
+            {
+                FirstName = "Inigo",
+                LastName = "Montoya"
+            };
 
-        //    var response = await client.PostAsJsonAsync("/api/users", userViewModel);
+            var response = await client.PostAsJsonAsync("/api/User", userViewModel);
 
-        //    Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-        //    var result = await response.Content.ReadAsStringAsync();
+            var result = await response.Content.ReadAsStringAsync();
 
-        //    var resultViewModel = JsonConvert.DeserializeObject<UserViewModel>(result);
+            var resultViewModel = JsonConvert.DeserializeObject<UserViewModel>(result);
 
-        //    Assert.AreEqual(userViewModel.FirstName, resultViewModel.FirstName);
-        //}
+            Assert.AreEqual(userViewModel.FirstName, resultViewModel.FirstName);
+        }
     }
 }

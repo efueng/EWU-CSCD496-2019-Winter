@@ -9,7 +9,6 @@ using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-// [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace SecretSanta.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -26,8 +25,8 @@ namespace SecretSanta.Api.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(200)]
+        //[ProducesResponseType(400)]
+        //[ProducesResponseType(200)]
         [Produces(typeof(UserViewModel))]
         public IActionResult PostAddUser(UserInputViewModel userViewModel)
         {
@@ -39,15 +38,16 @@ namespace SecretSanta.Api.Controllers
             var persistedUser = UserService.AddUser(Mapper.Map<User>(userViewModel));
             //var persistedUser = UserService.AddUser(UserInputViewModel.ToModel(userViewModel));
 
-            return Ok(Mapper.Map<UserViewModel>(persistedUser));
+            return Created("", Mapper.Map<UserViewModel>(persistedUser));
+            //return Ok(Mapper.Map<UserViewModel>(persistedUser));
             //return Ok(UserViewModel.ToViewModel(persistedUser));
         }
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(200)]
+        //[ProducesResponseType(400)]
+        //[ProducesResponseType(404)]
+        //[ProducesResponseType(200)]
         [Produces(typeof(UserViewModel))]
         public IActionResult PutUpdateUser(int id, UserInputViewModel userViewModel)
         {

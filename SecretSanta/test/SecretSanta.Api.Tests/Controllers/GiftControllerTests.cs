@@ -24,6 +24,7 @@ namespace SecretSanta.Api.Tests.Controllers
         {
             Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfileConfiguration()));
         }
+
         [TestMethod]
         public void GetGiftForUser_ReturnsUsersFromService()
         {

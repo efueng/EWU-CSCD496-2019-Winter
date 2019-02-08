@@ -13,8 +13,12 @@ namespace SecretSanta.Api.Models
         public AutoMapperProfileConfiguration()
         {
             CreateMap<Gift, GiftViewModel>();
-
+            
+            // Ignores User.Id in lossy conversion to UserInputViewModel
+            CreateMap<User, UserInputViewModel>()
+                .ForSourceMember(member => member.Id, options => options.DoNotValidate());
             CreateMap<User, UserViewModel>();
+            
             CreateMap<UserInputViewModel, User>();
 
             CreateMap<Group, GroupViewModel>();
