@@ -9,7 +9,6 @@ using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-// [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace SecretSanta.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -47,8 +46,7 @@ namespace SecretSanta.Api.Controllers
             {
                 return BadRequest();
             }
-
-            //return Ok(Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
+            
             return CreatedAtAction(nameof(PostCreateGroup), Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
         }
 
@@ -72,7 +70,7 @@ namespace SecretSanta.Api.Controllers
 
             fetchedGroup.Name = viewModel.Name;
 
-            return CreatedAtAction(nameof(PutUpdateGroup), Mapper.Map<GroupViewModel>(GroupService.UpdateGroup(fetchedGroup)));
+            return Created(nameof(PutUpdateGroup), Mapper.Map<GroupViewModel>(GroupService.UpdateGroup(fetchedGroup)));
         }
 
         [HttpPut("{groupId}/{userid}")]
@@ -100,9 +98,9 @@ namespace SecretSanta.Api.Controllers
 
         // DELETE api/group/5
         [HttpDelete("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(400)]
+        //[ProducesResponseType(404)]
         public IActionResult DeleteGroup(int id)
         {
             if (id <= 0)

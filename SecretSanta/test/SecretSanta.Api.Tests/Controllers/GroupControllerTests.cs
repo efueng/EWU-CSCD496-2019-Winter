@@ -120,7 +120,7 @@ namespace SecretSanta.Api.Tests.Controllers
 
             var controller = new GroupController(service.Object, Mapper.Instance);
 
-            var result = (OkObjectResult)controller.PutUpdateGroup(2, group);
+            var result = (CreatedResult)controller.PutUpdateGroup(2, group);
             var castResult = (GroupViewModel)result.Value;
 
             Assert.AreEqual(2, castResult.Id);
