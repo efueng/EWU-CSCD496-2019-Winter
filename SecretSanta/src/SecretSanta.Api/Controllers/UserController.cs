@@ -29,7 +29,7 @@ namespace SecretSanta.Api.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(200)]
         [Produces(typeof(UserViewModel))]
-        public IActionResult Post(UserInputViewModel userViewModel)
+        public IActionResult PostAddUser(UserInputViewModel userViewModel)
         {
             if (userViewModel == null)
             {
@@ -49,7 +49,7 @@ namespace SecretSanta.Api.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         [Produces(typeof(UserViewModel))]
-        public IActionResult Put(int id, UserInputViewModel userViewModel)
+        public IActionResult PutUpdateUser(int id, UserInputViewModel userViewModel)
         {
             if (userViewModel == null)
             {
@@ -77,7 +77,7 @@ namespace SecretSanta.Api.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [Produces(typeof(ActionResult))]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteUser(int id)
         {
             bool userWasDeleted = UserService.DeleteUser(id);
 
