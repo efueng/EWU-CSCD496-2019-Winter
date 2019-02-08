@@ -20,7 +20,7 @@ namespace SecretSanta.Api.Controllers
         public GiftController(IGiftService giftService, IMapper mapper)
         {
             GiftService = giftService;
-            Mapper = Mapper;
+            Mapper = mapper;
         }
 
         // GET api/Gift/5
@@ -28,7 +28,7 @@ namespace SecretSanta.Api.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         [Produces(typeof(List<GiftViewModel>))]
-        public IActionResult Get(int userId)
+        public IActionResult GetGiftForUser(int userId)
         {
             if (userId <= 0)
             {
