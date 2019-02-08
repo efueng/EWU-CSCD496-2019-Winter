@@ -27,20 +27,20 @@ namespace SecretSanta.Api.Controllers
 
         // GET api/group
         [HttpGet]
-        [ProducesResponseType(200)]
-        [Produces(typeof(IEnumerable<GroupViewModel>))]
+        //[ProducesResponseType(200)]
+        //[Produces(typeof(IEnumerable<GroupViewModel>))]
         public IActionResult GetAllGroups()
         {
-            return Ok(GroupService
+            return new OkObjectResult(GroupService
                 .FetchAll()
                 .Select(gs => Mapper.Map<GroupViewModel>(gs)));
         }
 
         // POST api/group
         [HttpPost]
-        [ProducesResponseType(200)] // ask why the assembly level directive doesn't work here, while it works above
-        [ProducesResponseType(400)]
-        [Produces(typeof(GroupViewModel))]
+        //[ProducesResponseType(200)] // ask why the assembly level directive doesn't work here, while it works above
+        //[ProducesResponseType(400)]
+        //[Produces(typeof(GroupViewModel))]
         public IActionResult PostCreateGroup(GroupInputViewModel viewModel)
         {
             if (viewModel == null)
@@ -48,14 +48,15 @@ namespace SecretSanta.Api.Controllers
                 return BadRequest();
             }
 
-            return Ok(Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
+            //return Ok(Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
+            return Created(nameof(PostCreateGroup), Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
         }
 
         // PUT api/group/5
         [HttpPut("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(400)]
+        //[ProducesResponseType(404)]
         [Produces(typeof(GroupViewModel))]
         public IActionResult PutUpdateGroup(int id, GroupInputViewModel viewModel)
         {
@@ -75,9 +76,9 @@ namespace SecretSanta.Api.Controllers
         }
 
         [HttpPut("{groupId}/{userid}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(400)]
+        //[ProducesResponseType(404)]
         public IActionResult PutAddUserToGroup(int groupId, int userId)
         {
             if (groupId <= 0)

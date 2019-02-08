@@ -25,8 +25,6 @@ namespace SecretSanta.Api.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        //[ProducesResponseType(400)]
-        //[ProducesResponseType(200)]
         [Produces(typeof(UserViewModel))]
         public IActionResult PostAddUser(UserInputViewModel userViewModel)
         {

@@ -9,8 +9,8 @@ using SecretSanta.Domain.Models;
 namespace SecretSanta.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190208024537_AddedConstraintsToUserInputViewModel")]
-    partial class AddedConstraintsToUserInputViewModel
+    [Migration("20190208043617_InitialDb")]
+    partial class InitialDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

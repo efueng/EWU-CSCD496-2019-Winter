@@ -1,238 +1,242 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Moq;
-//using SecretSanta.Api.Controllers;
-//using SecretSanta.Api.ViewModels;
-//using SecretSanta.Domain.Models;
-//using SecretSanta.Domain.Services.Interfaces;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using SecretSanta.Api.Controllers;
+using SecretSanta.Api.ViewModels;
+using SecretSanta.Domain.Models;
+using SecretSanta.Domain.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-//namespace SecretSanta.Api.Tests.Controllers
-//{
-//    [TestClass]
-//    public class GroupControllerTests
-//    {
-//        [TestMethod]
-//        [ExpectedException(typeof(ArgumentNullException))]
-//        public void GroupController_RequiresGiftService()
-//        {
-//            new GroupController(null);
-//        }
+namespace SecretSanta.Api.Tests.Controllers
+{
+    [TestClass]
+    public class GroupControllerTests
+    {
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GroupController_RequiresGiftService()
+        {
+            new GroupController(null, Mapper.Instance);
+        }
 
-//        [TestMethod]
-//        public void GetAllGroups_ReturnsGroups()
-//        {
-//            var group1 = new Group
-//            {
-//                Id = 1,
-//                Name = "Group 1"
-//            };
-//            var group2 = new Group
-//            {
-//                Id = 2,
-//                Name = "Group 2"
-//            };
+        [TestMethod]
+        public void GetAllGroups_ReturnsGroups()
+        {
+            var group1 = new Group
+            {
+                Id = 1,
+                Name = "Group 1"
+            };
+            var group2 = new Group
+            {
+                Id = 2,
+                Name = "Group 2"
+            };
 
-//            var service = new Mock<IGroupService>();
-//            service.Setup(x => x.FetchAll())
-//                .Returns(new List<Group> { group1, group2 })
-//                .Verifiable();
-
-
-//            var controller = new GroupController(service.Object);
-
-//            ActionResult<IEnumerable<GroupViewModel>> result = controller.GetAllGroups();
-
-//            List<GroupViewModel> groups = result.Value.ToList();
-
-//            Assert.AreEqual(2, groups.Count);
-//            AssertAreEqual(groups[0], group1);
-//            AssertAreEqual(groups[1], group2);
-//            service.VerifyAll();
-//        }
-
-//        [TestMethod]
-//        public void CreateGroup_RequiresGroup()
-//        {
-//            var service = new Mock<IGroupService>(MockBehavior.Strict);
-//            var controller = new GroupController(service.Object);
+            var service = new Mock<IGroupService>();
+            service.Setup(x => x.FetchAll())
+                .Returns(new List<Group> { group1, group2 })
+                .Verifiable();
 
 
-//            ActionResult<GroupViewModel> result = controller.PostCreateGroup(null);
+            var controller = new GroupController(service.Object, Mapper.Instance);
 
-//            Assert.IsTrue(result.Result is BadRequestResult);
-//        }
+            //ActionResult<IEnumerable<GroupViewModel>> result = controller.GetAllGroups();
+            var result = controller.GetAllGroups();
+            Assert.IsTrue(result is OkObjectResult);
+            var castResult = (OkObjectResult)result;
+            var groups = ((IEnumerable<GroupViewModel>)castResult.Value).ToList();
 
-//        [TestMethod]
-//        public void CreateGroup_ReturnsCreatedGroup()
-//        {
-//            var group = new GroupInputViewModel
-//            {
-//                Name = "Group"
-//            };
-//            var service = new Mock<IGroupService>();
-//            service.Setup(x => x.AddGroup(It.Is<Domain.Models.Group>(g => g.Name == group.Name)))
-//                .Returns(new Domain.Models.Group
-//                {
-//                    Id = 2,
-//                    Name = group.Name
-//                })
-//                .Verifiable();
+            Assert.AreEqual(2, groups.Count);
+            AssertAreEqual(groups[0], group1);
+            AssertAreEqual(groups[1], group2);
+            service.VerifyAll();
+        }
 
-//            var controller = new GroupController(service.Object);
-
-//            ActionResult<GroupViewModel> result = controller.PostCreateGroup(group);
-
-//            Assert.AreEqual(2, result.Value.Id);
-//            Assert.AreEqual("Group", result.Value.Name);
-//            service.VerifyAll();
-//        }
-
-//        [TestMethod]
-//        public void UpdateGroup_RequiresGroup()
-//        {
-//            var service = new Mock<IGroupService>(MockBehavior.Strict);
-//            var controller = new GroupController(service.Object);
+        [TestMethod]
+        public void CreateGroup_RequiresGroup()
+        {
+            var service = new Mock<IGroupService>(MockBehavior.Strict);
+            var controller = new GroupController(service.Object, Mapper.Instance);
 
 
-//            ActionResult<GroupViewModel> result = controller.PutUpdateGroup(-1, null);
+            IActionResult result = controller.PostCreateGroup(null);
 
-//            Assert.IsTrue(result.Result is BadRequestResult);
-//        }
+            Assert.IsTrue(result is BadRequestResult);
+        }
 
-//        [TestMethod]
-//        public void UpdateGroup_ReturnsUpdatedGroup()
-//        {
-//            var group = new GroupInputViewModel
-//            {
-//                Name = "Group"
-//            };
-//            var service = new Mock<IGroupService>();
-//            service.Setup(x => x.Find(2)).Returns(new Group { Id = 2, Name = "My Group" }).Verifiable();
-//            service.Setup(x => x.UpdateGroup(It.Is<Group>(g =>
-//                    g.Name == group.Name)))
-//                .Returns(new Domain.Models.Group
-//                {
-//                    Id = 2,
-//                    Name = group.Name
-//                })
-//                .Verifiable();
+        [TestMethod]
+        public void PostCreateGroup_ReturnsCreatedGroup()
+        {
+            var group = new GroupInputViewModel
+            {
+                Name = "Group"
+            };
+            var service = new Mock<IGroupService>();
+            service.Setup(x => x.AddGroup(It.Is<Domain.Models.Group>(g => g.Name == group.Name)))
+                .Returns(new Domain.Models.Group
+                {
+                    Id = 2,
+                    Name = group.Name
+                })
+                .Verifiable();
 
-//            var controller = new GroupController(service.Object);
+            var controller = new GroupController(service.Object, Mapper.Instance);
 
-//            ActionResult<GroupViewModel> result = controller.PutUpdateGroup(2, group);
+            var result = (CreatedAtActionResult)controller.PostCreateGroup(group);
+            var castResult = (GroupViewModel)result.Value;
+            Assert.AreEqual(2, castResult.Id);
+            Assert.AreEqual("Group", castResult.Name);
+            service.VerifyAll();
+        }
 
-//            Assert.AreEqual(2, result.Value.Id);
-//            Assert.AreEqual("Group", result.Value.Name);
-//            service.VerifyAll();
-//        }
-
-//        [TestMethod]
-//        [DataRow(-1)]
-//        [DataRow(0)]
-//        public void DeleteGroup_RequiresPositiveId(int groupId)
-//        {
-//            var service = new Mock<IGroupService>(MockBehavior.Strict);
-//            var controller = new GroupController(service.Object);
-
-//            ActionResult result = controller.DeleteGroup(groupId);
-
-//            Assert.IsTrue(result is BadRequestObjectResult);
-//        }
-
-//        [TestMethod]
-//        public void DeleteGroup_ReturnsNotFoundWhenTheGroupFailsToDelete()
-//        {
-//            var service = new Mock<IGroupService>();
-//            service.Setup(x => x.DeleteGroup(2))
-//                .Returns(false)
-//                .Verifiable();
-//            var controller = new GroupController(service.Object);
-
-//            ActionResult result = controller.DeleteGroup(2);
-
-//            Assert.IsTrue(result is NotFoundResult);
-//        }
-
-//        [TestMethod]
-//        public void DeleteGroup_ReturnsOkWhenGroupIsDeleted()
-//        {
-//            var service = new Mock<IGroupService>();
-//            service.Setup(x => x.DeleteGroup(2))
-//                .Returns(true)
-//                .Verifiable();
-//            var controller = new GroupController(service.Object);
-
-//            ActionResult result = controller.DeleteGroup(2);
-
-//            Assert.IsTrue(result is OkResult);
-//        }
-
-//        [TestMethod]
-//        [DataRow(-1)]
-//        [DataRow(0)]
-//        public void AddUserToGroup_RequiresPositiveGroupId(int groupId)
-//        {
-//            var service = new Mock<IGroupService>(MockBehavior.Strict);
-//            var controller = new GroupController(service.Object);
-
-//            ActionResult result = controller.PutAddUserToGroup(groupId, 1);
-
-//            Assert.IsTrue(result is BadRequestResult);
-//        }
+        [TestMethod]
+        public void UpdateGroup_RequiresGroup()
+        {
+            var service = new Mock<IGroupService>(MockBehavior.Strict);
+            var controller = new GroupController(service.Object, Mapper.Instance);
 
 
-//        [TestMethod]
-//        [DataRow(-1)]
-//        [DataRow(0)]
-//        public void AddUserToGroup_RequiresPositiveUserId(int userId)
-//        {
-//            var service = new Mock<IGroupService>(MockBehavior.Strict);
-//            var controller = new GroupController(service.Object);
+            IActionResult result = controller.PutUpdateGroup(-1, null);
 
-//            ActionResult result = controller.PutAddUserToGroup(1, userId);
+            Assert.IsTrue(result is BadRequestResult);
+        }
 
-//            Assert.IsTrue(result is BadRequestResult);
-//        }
+        [TestMethod]
+        public void UpdateGroup_ReturnsUpdatedGroup()
+        {
+            var group = new GroupInputViewModel
+            {
+                Name = "Group"
+            };
+            var service = new Mock<IGroupService>();
+            service.Setup(x => x.Find(2)).Returns(new Group { Id = 2, Name = "My Group" }).Verifiable();
+            service.Setup(x => x.UpdateGroup(It.Is<Group>(g =>
+                    g.Name == group.Name)))
+                .Returns(new Domain.Models.Group
+                {
+                    Id = 2,
+                    Name = group.Name
+                })
+                .Verifiable();
 
-//        [TestMethod]
-//        public void AddUserToGroup_WhenUserFailsToAddToGroupItReturnsNotFound()
-//        {
-//            var service = new Mock<IGroupService>();
-//            service.Setup(x => x.AddUserToGroup(2, 3))
-//                .Returns(false)
-//                .Verifiable();
-//            var controller = new GroupController(service.Object);
+            var controller = new GroupController(service.Object, Mapper.Instance);
 
-//            ActionResult result = controller.PutAddUserToGroup(2, 3);
+            var result = (OkObjectResult)controller.PutUpdateGroup(2, group);
+            var castResult = (GroupViewModel)result.Value;
 
-//            Assert.IsTrue(result is NotFoundResult);
-//        }
+            Assert.AreEqual(2, castResult.Id);
+            Assert.AreEqual("Group", castResult.Name);
+            service.VerifyAll();
+        }
 
-//        [TestMethod]
-//        public void AddUserToGroup_ReturnsOkWhenUserAddedToGroup()
-//        {
-//            var service = new Mock<IGroupService>();
-//            service.Setup(x => x.AddUserToGroup(2, 3))
-//                .Returns(true)
-//                .Verifiable();
-//            var controller = new GroupController(service.Object);
+        //[TestMethod]
+        //[DataRow(-1)]
+        //[DataRow(0)]
+        //public void DeleteGroup_RequiresPositiveId(int groupId)
+        //{
+        //    var service = new Mock<IGroupService>(MockBehavior.Strict);
+        //    var controller = new GroupController(service.Object);
 
-//            ActionResult result = controller.PutAddUserToGroup(2, 3);
+        //    ActionResult result = controller.DeleteGroup(groupId);
 
-//            Assert.IsTrue(result is OkResult);
-//        }
+        //    Assert.IsTrue(result is BadRequestObjectResult);
+        //}
 
-//        private static void AssertAreEqual(GroupViewModel expected, Group actual)
-//        {
-//            if (expected == null && actual == null) return;
-//            if (expected == null || actual == null) Assert.Fail();
+        //[TestMethod]
+        //public void DeleteGroup_ReturnsNotFoundWhenTheGroupFailsToDelete()
+        //{
+        //    var service = new Mock<IGroupService>();
+        //    service.Setup(x => x.DeleteGroup(2))
+        //        .Returns(false)
+        //        .Verifiable();
+        //    var controller = new GroupController(service.Object);
 
-//            Assert.AreEqual(expected.Id, actual.Id);
-//            Assert.AreEqual(expected.Name, actual.Name);
-//        }
-//    }
-//}
+        //    ActionResult result = controller.DeleteGroup(2);
+
+        //    Assert.IsTrue(result is NotFoundResult);
+        //}
+
+        //[TestMethod]
+        //public void DeleteGroup_ReturnsOkWhenGroupIsDeleted()
+        //{
+        //    var service = new Mock<IGroupService>();
+        //    service.Setup(x => x.DeleteGroup(2))
+        //        .Returns(true)
+        //        .Verifiable();
+        //    var controller = new GroupController(service.Object);
+
+        //    ActionResult result = controller.DeleteGroup(2);
+
+        //    Assert.IsTrue(result is OkResult);
+        //}
+
+        //[TestMethod]
+        //[DataRow(-1)]
+        //[DataRow(0)]
+        //public void AddUserToGroup_RequiresPositiveGroupId(int groupId)
+        //{
+        //    var service = new Mock<IGroupService>(MockBehavior.Strict);
+        //    var controller = new GroupController(service.Object);
+
+        //    ActionResult result = controller.PutAddUserToGroup(groupId, 1);
+
+        //    Assert.IsTrue(result is BadRequestResult);
+        //}
+
+
+        //[TestMethod]
+        //[DataRow(-1)]
+        //[DataRow(0)]
+        //public void AddUserToGroup_RequiresPositiveUserId(int userId)
+        //{
+        //    var service = new Mock<IGroupService>(MockBehavior.Strict);
+        //    var controller = new GroupController(service.Object);
+
+        //    ActionResult result = controller.PutAddUserToGroup(1, userId);
+
+        //    Assert.IsTrue(result is BadRequestResult);
+        //}
+
+        //[TestMethod]
+        //public void AddUserToGroup_WhenUserFailsToAddToGroupItReturnsNotFound()
+        //{
+        //    var service = new Mock<IGroupService>();
+        //    service.Setup(x => x.AddUserToGroup(2, 3))
+        //        .Returns(false)
+        //        .Verifiable();
+        //    var controller = new GroupController(service.Object);
+
+        //    ActionResult result = controller.PutAddUserToGroup(2, 3);
+
+        //    Assert.IsTrue(result is NotFoundResult);
+        //}
+
+        //[TestMethod]
+        //public void AddUserToGroup_ReturnsOkWhenUserAddedToGroup()
+        //{
+        //    var service = new Mock<IGroupService>();
+        //    service.Setup(x => x.AddUserToGroup(2, 3))
+        //        .Returns(true)
+        //        .Verifiable();
+        //    var controller = new GroupController(service.Object);
+
+        //    ActionResult result = controller.PutAddUserToGroup(2, 3);
+
+        //    Assert.IsTrue(result is OkResult);
+        //}
+
+        private static void AssertAreEqual(GroupViewModel expected, Group actual)
+        {
+            if (expected == null && actual == null) return;
+            if (expected == null || actual == null) Assert.Fail();
+
+            Assert.AreEqual(expected.Id, actual.Id);
+            Assert.AreEqual(expected.Name, actual.Name);
+        }
+    }
+}
