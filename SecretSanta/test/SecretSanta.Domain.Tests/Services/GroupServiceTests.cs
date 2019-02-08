@@ -69,28 +69,28 @@ namespace SecretSanta.Domain.Tests.Services
             }
         }
 
-        [TestMethod]
-        public void GetUsers_ReturnsUserInGroup()
-        {
-            var user = new User { Id = 42 };
-            var group = new Group { Id = 43 };
-            var groupUser = new GroupUser { GroupId = group.Id, UserId = user.Id };
-            group.GroupUsers = new List<GroupUser> { groupUser };
+        //[TestMethod]
+        //public void GetUsers_ReturnsUserInGroup()
+        //{
+        //    var user = new User { Id = 42 };
+        //    var group = new Group { Id = 43 };
+        //    var groupUser = new GroupUser { GroupId = group.Id, UserId = user.Id };
+        //    group.GroupUsers = new List<GroupUser> { groupUser };
 
-            using (var context = new ApplicationDbContext(Options))
-            {
-                context.Users.Add(user);
-                context.Groups.Add(group);
-                context.SaveChanges();
-            }
+        //    using (var context = new ApplicationDbContext(Options))
+        //    {
+        //        context.Users.Add(user);
+        //        context.Groups.Add(group);
+        //        context.SaveChanges();
+        //    }
 
-            using (var context = new ApplicationDbContext(Options))
-            {
-                var service = new GroupService(context);
-                List<User> users = service.GetUsers(43);
-                Assert.AreEqual(42, users.Single().Id);
-            }
-        }
+        //    using (var context = new ApplicationDbContext(Options))
+        //    {
+        //        var service = new GroupService(context);
+        //        List<User> users = service.GetUsers(43);
+        //        Assert.AreEqual(42, users.Single().Id);
+        //    }
+        //}
 
         [TestMethod]
         public void GetUsers_ReturnsEmptySetWhenGroupIsNotFound()
