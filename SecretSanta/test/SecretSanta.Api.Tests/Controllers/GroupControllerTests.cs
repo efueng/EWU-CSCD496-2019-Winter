@@ -16,12 +16,6 @@ namespace SecretSanta.Api.Tests.Controllers
     [TestClass]
     public class GroupControllerTests
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void GroupController_RequiresGiftService()
-        {
-            new GroupController(null, Mapper.Instance);
-        }
 
         [TestMethod]
         public void GetAllGroups_ReturnsGroups()

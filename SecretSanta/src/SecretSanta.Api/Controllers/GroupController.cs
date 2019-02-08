@@ -22,7 +22,7 @@ namespace SecretSanta.Api.Controllers
         public GroupController(IGroupService groupService, IMapper mapper)
         {
             GroupService = groupService;
-            Mapper = Mapper;
+            Mapper = mapper;
         }
 
         // GET api/group
@@ -40,7 +40,7 @@ namespace SecretSanta.Api.Controllers
         [HttpPost]
         //[ProducesResponseType(200)] // ask why the assembly level directive doesn't work here, while it works above
         //[ProducesResponseType(400)]
-        //[Produces(typeof(GroupViewModel))]
+        [Produces(typeof(GroupViewModel))]
         public IActionResult PostCreateGroup(GroupInputViewModel viewModel)
         {
             if (viewModel == null)
@@ -49,7 +49,7 @@ namespace SecretSanta.Api.Controllers
             }
 
             //return Ok(Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
-            return Created(nameof(PostCreateGroup), Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
+            return CreatedAtAction(nameof(PostCreateGroup), Mapper.Map<GroupViewModel>(GroupService.AddGroup(Mapper.Map<Group>(viewModel))));
         }
 
         // PUT api/group/5
