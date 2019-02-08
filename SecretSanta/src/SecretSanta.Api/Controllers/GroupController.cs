@@ -9,7 +9,7 @@ using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-[assembly: ApiConventionType(typeof(DefaultApiConventions))]
+// [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace SecretSanta.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -54,9 +54,9 @@ namespace SecretSanta.Api.Controllers
 
         // PUT api/group/5
         [HttpPut("{id}")]
-        //[ProducesResponseType(200)]
-        //[ProducesResponseType(400)]
-        //[ProducesResponseType(404)]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [Produces(typeof(GroupViewModel))]
         public IActionResult PutUpdateGroup(int id, GroupInputViewModel viewModel)
         {
@@ -72,13 +72,13 @@ namespace SecretSanta.Api.Controllers
 
             fetchedGroup.Name = viewModel.Name;
 
-            return Ok(Mapper.Map<GroupViewModel>(GroupService.UpdateGroup(fetchedGroup)));
+            return CreatedAtAction(nameof(PutUpdateGroup), Mapper.Map<GroupViewModel>(GroupService.UpdateGroup(fetchedGroup)));
         }
 
         [HttpPut("{groupId}/{userid}")]
-        //[ProducesResponseType(200)]
-        //[ProducesResponseType(400)]
-        //[ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public IActionResult PutAddUserToGroup(int groupId, int userId)
         {
             if (groupId <= 0)
