@@ -32,6 +32,7 @@ Jane => John
 Jim => Jaun
 Jaun => John
 - The existing controllers and sevices are not fully unit tested. Update the existing unit tests so they are fully tested.
+- The current Pairing object does not track what group created it. Add the ability to associate the pairing to the group it was created for. Test to ensure that you can add two pairings that differ only by the group.
 
 ### Useful Stuff
 
