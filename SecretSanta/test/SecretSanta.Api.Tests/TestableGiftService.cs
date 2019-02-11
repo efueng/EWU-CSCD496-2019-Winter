@@ -3,6 +3,7 @@ using SecretSanta.Domain.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SecretSanta.Api.Tests
 {
@@ -14,7 +15,7 @@ namespace SecretSanta.Api.Tests
         public List<Gift> GetGiftsForUser(int userId)
         {
             GetGiftsForUser_UserId = userId;
-            return ToReturn;
+            return Task.FromResult(ToReturn);
         }
     }
 }
