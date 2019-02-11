@@ -12,7 +12,7 @@ namespace SecretSanta.Api.Tests
         public List<Gift> ToReturn { get; set; }
         public int GetGiftsForUser_UserId { get; set; }
 
-        public List<Gift> GetGiftsForUser(int userId)
+        public Task<List<Gift>> GetGiftsForUser(int userId)
         {
             GetGiftsForUser_UserId = userId;
             return Task.FromResult(ToReturn);
