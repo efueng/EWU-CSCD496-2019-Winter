@@ -39,6 +39,10 @@ namespace SecretSanta.Api.Controllers
         [Produces(typeof(UserViewModel))]
         public async Task<IActionResult> Get(int id)
         {
+            if (id <= 0)
+            {
+                return BadRequest("A user id must be specified");
+            }
             User fetchedUser = await UserService.GetById(id);
             if (fetchedUser == null)
             {
