@@ -18,7 +18,7 @@ namespace SecretSanta.Domain.Services
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             Service = service;
         }
-        public async Task GeneratePairings(int groupId)
+        public async Task<bool> GeneratePairings(int groupId)
         {
             Group group = await DbContext.Groups
                 .Include(x => x.GroupUsers)
@@ -26,13 +26,43 @@ namespace SecretSanta.Domain.Services
 
             List<int> userIds = group?.GroupUsers?.Select(x => x.UserId).ToList();
 
+            if (userIds == null || userIds.Count < 2)
+            {
+                return false;
+            }
+
             // Invoke GetPairings on separate thread
-            await GetPairings(userIds);
+            Task<List<Pairing>> task = Task.Run(() => GetPairings(userIds));
+            List<Pairing> pairings = await task;
+
+            await DbContext.AddRangeAsync();
+            await DbContext.SaveChangesAsync();
+
+            return true;
         }
 
-        private async Task<List<Pairing>> GetPairings(List<int> userIds)
+        private List<Pairing> GetPairings(List<int> userIds)
         {
-            return null;
+            var pairings = new List<Pairing>();
+
+            for (int idx = 0; idx < userIds.Count - 1; idx++)
+            {
+                var pairing = new Pairing
+                {
+                    SantaId = userIds[idx],
+                    RecipientId = userIds[idx + 1]
+                };
+            }
+
+            var lastPairing = new Pairing
+            {
+                SantaId = userIds.Last(),
+                RecipientId = userIds.First()
+            };
+
+            pairings.Add(lastPairing);
+
+            return pairings;
         }
     }
 }
