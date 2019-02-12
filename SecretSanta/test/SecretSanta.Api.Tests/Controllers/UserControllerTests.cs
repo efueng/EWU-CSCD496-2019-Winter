@@ -143,9 +143,9 @@ namespace SecretSanta.Api.Tests.Controllers
         //{
         //    // Arrange
         //    var service = new Mock<IUserService>(MockBehavior.Strict);
-        //    //service.Setup(x => x.GetById(It.IsAny<int>()))
-        //    //    .ReturnsAsync(Task.FromResult())
-        //    //    .Verifiable();
+        //    service.Setup(x => x.GetById(It.IsAny<int>()))
+        //        .ReturnsAsync(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)))
+        //        .Verifiable();
         //    var controller = new UsersController(service.Object, Mapper.Instance);
 
         //    // Act
@@ -182,5 +182,57 @@ namespace SecretSanta.Api.Tests.Controllers
             Assert.AreEqual("Dantes", viewModel.LastName);
             service.VerifyAll();
         }
+
+        [TestMethod]
+        [DataRow(-1, null)]
+        [DataRow(0, null)]
+        [DataRow(1, null)]
+        public async Task UpdateUserViaApi_InvalidParameters_ReturnsBadRequest(int userId, UserInputViewModel viewModel)
+        {
+            // Arrange
+            var service = new Mock<IUserService>(MockBehavior.Strict);
+            var controller = new UsersController(service.Object, Mapper.Instance);
+
+            // Act
+            var result = await controller.Put(userId, viewModel);
+
+            // Assert
+            Assert.IsTrue(result is BadRequestResult);
+        }
+
+        [TestMethod]
+        public async Task UpdateUserViaApi_ValidParameters_ReturnsUpdatedUser()
+        {
+            // Arrange
+            int userId = 1;
+            var user = new UserInputViewModel
+            {
+                FirstName = "Edmond",
+                LastName = "Dantes"
+            };
+
+            var updatedUser = new UserInputViewModel
+            {
+                FirstName = "Updated",
+                LastName = "User"
+            };
+
+            var service = new Mock<IUserService>(MockBehavior.Strict);
+            service.Setup(x => x.GetById(userId))
+                .ReturnsAsync(new User { FirstName = "Updated", LastName = "User" })
+                .Verifiable();
+
+            var controller = new UsersController(service.Object, Mapper.Instance);
+
+            //await controller.Post(user);
+
+            // Act
+            IActionResult result = await controller.Put(userId, updatedUser) as NoContentResult;
+
+            //Assert.IsTrue(result is NoContentResult);
+            Assert.IsNotNull(result);
+            service.VerifyAll();
+        }
     }
+
 }

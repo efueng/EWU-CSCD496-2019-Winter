@@ -71,7 +71,7 @@ namespace SecretSanta.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, UserInputViewModel viewModel)
         {
-            if (viewModel == null)
+            if (viewModel == null || id <= 0)
             {
                 return BadRequest();
             }

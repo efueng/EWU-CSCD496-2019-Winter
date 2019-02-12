@@ -16,7 +16,7 @@ namespace SecretSanta.Domain.Services
         public PairingService(ApplicationDbContext dbContext, IPairingService service)
         {
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            Service = service;
+            Service = service ?? throw new ArgumentNullException(nameof(service));
         }
         public async Task<bool> GeneratePairings(int groupId)
         {
