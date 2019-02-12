@@ -1,5 +1,7 @@
 ## Assignment 5
 
+**DATE CHANGE:** Due to weather and EWU cancelling classes on 2/12. The due date for this assignment is 11:59pm on 2/17/19
+
 For this assignment start from the existing intellitect/Assignment5 branch.
 
 - Update all of the service classes to use the async EF (Entity Framework) methods. 
