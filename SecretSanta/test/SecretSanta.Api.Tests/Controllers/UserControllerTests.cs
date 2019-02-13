@@ -136,25 +136,25 @@ namespace SecretSanta.Api.Tests.Controllers
             service.VerifyAll();
         }
 
-        //[TestMethod]
-        //[DataRow(1)]
-        //[DataRow(2)]
-        //public async Task GetUserByIdViaApi_UserNotFound_ReturnsNotFoundResult(int userId)
-        //{
-        //    // Arrange
-        //    var service = new Mock<IUserService>(MockBehavior.Strict);
-        //    service.Setup(x => x.GetById(It.IsAny<int>()))
-        //        .ReturnsAsync(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)))
-        //        .Verifiable();
-        //    var controller = new UsersController(service.Object, Mapper.Instance);
+        [TestMethod]
+        [DataRow(1)]
+        [DataRow(2)]
+        public async Task GetUserByIdViaApi_UserNotFound_ReturnsNotFoundResult(int userId)
+        {
+            // Arrange
+            var service = new Mock<IUserService>();// MockBehavior.Strict);
+            //service.Setup(x => x.GetById(It.IsAny<int>()))
+            //    .ReturnsAsync(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)))
+            //    .Verifiable();
+            var controller = new UsersController(service.Object, Mapper.Instance);
 
-        //    // Act
-        //    IActionResult result = await controller.Get(userId);
+            // Act
+            IActionResult result = await controller.Get(userId);
 
-        //    // Assert
-        //    Assert.IsTrue(result is NotFoundResult);
-        //    service.VerifyAll();
-        //}
+            // Assert
+            Assert.IsTrue(result is NotFoundResult);
+            service.VerifyAll();
+        }
 
         [TestMethod]
         public async Task GetUserByIdViaApi_CompletesSuccessfully()
@@ -217,7 +217,7 @@ namespace SecretSanta.Api.Tests.Controllers
                 LastName = "User"
             };
 
-            var service = new Mock<IUserService>(MockBehavior.Strict);
+            var service = new Mock<IUserService>();// MockBehavior.Strict);
             service.Setup(x => x.GetById(userId))
                 .ReturnsAsync(new User { FirstName = "Updated", LastName = "User" })
                 .Verifiable();
@@ -231,6 +231,49 @@ namespace SecretSanta.Api.Tests.Controllers
 
             //Assert.IsTrue(result is NoContentResult);
             Assert.IsNotNull(result);
+            service.VerifyAll();
+        }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        public async Task DeleteUser_RequiresPositiveId(int userId)
+        {
+            var service = new Mock<IUserService>(MockBehavior.Strict);
+            var controller = new UsersController(service.Object, Mapper.Instance);
+
+            IActionResult result = await controller.Delete(userId);
+
+            Assert.IsTrue(result is BadRequestObjectResult);
+        }
+
+        [TestMethod]
+        public async Task DeleteUser_ReturnsNotFoundWhenTheUserFailsToDelete()
+        {
+            var service = new Mock<IUserService>();
+            service.Setup(x => x.DeleteUser(2))
+                .ReturnsAsync(false)
+                .Verifiable();
+            var controller = new UsersController(service.Object, Mapper.Instance);
+
+            IActionResult result = await controller.Delete(2);
+
+            Assert.IsTrue(result is NotFoundResult);
+            service.VerifyAll();
+        }
+
+        [TestMethod]
+        public async Task DeleteUser_ReturnsOkWhenUserIsDeleted()
+        {
+            var service = new Mock<IUserService>();
+            service.Setup(x => x.DeleteUser(2))
+                .ReturnsAsync(true)
+                .Verifiable();
+            var controller = new UsersController(service.Object, Mapper.Instance);
+
+            IActionResult result = await controller.Delete(2);
+
+            Assert.IsTrue(result is OkResult);
             service.VerifyAll();
         }
     }

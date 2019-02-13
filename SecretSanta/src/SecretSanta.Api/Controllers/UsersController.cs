@@ -57,7 +57,7 @@ namespace SecretSanta.Api.Controllers
         [Produces(typeof(UserViewModel))]
         public async Task<IActionResult> Post(UserInputViewModel viewModel)
         {
-            if (User == null)
+            if (viewModel == null)
             {
                 return BadRequest();
             }
