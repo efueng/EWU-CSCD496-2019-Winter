@@ -1,106 +1,180 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using SecretSanta.Api.Controllers;
 using SecretSanta.Api.Services.Interfaces;
 using SecretSanta.Api.ViewModels;
 using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace SecretSanta.Api.Controllers
+namespace SecretSanta.Api.Tests.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public partial class GroupUsersController : ControllerBase
+    [TestClass]
+    public class GroupUserControllerTests
     {
-        private IGroupUserService GroupUserService { get; }
-        private IMapper Mapper { get; }
-
-        public GroupUsersController(IGroupUserService GroupUserService, IMapper mapper)
+        [TestMethod]
+        public async Task GetAllGroupUsers_ReturnsGroupUsers()
         {
-            GroupUserService = GroupUserService;
-            Mapper = mapper;
+            var GroupUser1 = new GroupUser
+            {
+                Id = 1,
+                Name = "GroupUser 1"
+            };
+            var GroupUser2 = new GroupUser
+            {
+                Id = 2,
+                Name = "GroupUser 2"
+            };
+
+            var service = new Mock<IGroupUserService>();
+            service.Setup(x => x.FetchAll())
+                .ReturnsAsync(new List<GroupUser> { GroupUser1, GroupUser2 })
+                .Verifiable();
+
+
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
+
+            var result = await controller.Get() as OkObjectResult;
+
+            List<GroupUserViewModel> GroupUsers = ((IEnumerable<GroupUserViewModel>)result.Value).ToList();
+
+            Assert.AreEqual(2, GroupUsers.Count);
+            AssertAreEqual(GroupUsers[0], GroupUser1);
+            AssertAreEqual(GroupUsers[1], GroupUser2);
+            service.VerifyAll();
         }
 
-        // GET api/GroupUser
-        [HttpGet]
-        [Produces(typeof(ICollection<GroupUserViewModel>))]
-        public async Task<IActionResult> Get()
+        [TestMethod]
+        public async Task CreateGroupUser_RequiresGroupUser()
         {
-            List<GroupUser> GroupUsers = await GroupUserService.FetchAll();
-            return Ok(GroupUsers.Select(x => Mapper.Map<GroupUserViewModel>(x)));
-            //return Ok(GroupUserService.FetchAll().Select(x => Mapper.Map<GroupUserViewModel>(x)));
+            var service = new Mock<IGroupUserService>(MockBehavior.Strict);
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
+
+
+            var result = await controller.Post(null) as BadRequestResult;
+
+            Assert.IsNotNull(result);
         }
 
-        [HttpGet("{id}")]
-        [Produces(typeof(GroupUserViewModel))]
-        public async Task<IActionResult> Get(int id)
+        [TestMethod]
+        public async Task CreateGroupUser_ReturnsCreatedGroupUser()
         {
-            if (id <= 0)
+            var GroupUser = new GroupUserInputViewModel
             {
-                return BadRequest("A GroupUser id must be specified");
-            }
-            GroupUser fetchedGroupUser = await GroupUserService.GetById(id);
-            if (fetchedGroupUser == null)
-            {
-                return NotFound();
-            }
+                Name = "GroupUser"
+            };
+            var service = new Mock<IGroupUserService>();
+            service.Setup(x => x.AddGroupUser(It.Is<GroupUser>(g => g.Name == GroupUser.Name)))
+                .ReturnsAsync(new GroupUser
+                {
+                    Id = 2,
+                    Name = GroupUser.Name
+                })
+                .Verifiable();
 
-            return Ok(Mapper.Map<GroupUserViewModel>(fetchedGroupUser));
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
+
+            var result = await controller.Post(GroupUser) as CreatedAtActionResult;
+            var resultValue = result.Value as GroupUserViewModel;
+
+            Assert.IsNotNull(resultValue);
+            Assert.AreEqual(2, resultValue.Id);
+            Assert.AreEqual("GroupUser", resultValue.Name);
+            service.VerifyAll();
         }
 
-        // POST api/GroupUser
-        [HttpPost]
-        [Produces(typeof(GroupUserViewModel))]
-        public async Task<IActionResult> Post(GroupUserInputViewModel viewModel)
+        [TestMethod]
+        public async Task UpdateGroupUser_RequiresGroupUser()
         {
-            if (GroupUser == null)
-            {
-                return BadRequest();
-            }
+            var service = new Mock<IGroupUserService>(MockBehavior.Strict);
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
 
-            GroupUser createdGroupUser = await GroupUserService.AddGroupUser(Mapper.Map<GroupUser>(viewModel));
 
-            return CreatedAtAction(nameof(Get), new { id = createdGroupUser.Id }, Mapper.Map<GroupUserViewModel>(createdGroupUser));
+            IActionResult result = await controller.Put(1, null) as BadRequestResult;
+
+            Assert.IsNotNull(result);
         }
 
-        // PUT api/GroupUser/5
-        [HttpPut]
-        public async Task<IActionResult> Put(int id, GroupUserViewModel viewModel)
+        [TestMethod]
+        public async Task UpdateGroupUser_ReturnsUpdatedGroupUser()
         {
-            if (viewModel == null || id <= 0)
+            var GroupUser = new GroupUserInputViewModel
             {
-                return BadRequest();
-            }
-            GroupUser fetchedGroupUser = await GroupUserService.GetById(id);
-            if (fetchedGroupUser == null)
-            {
-                return NotFound();
-            }
+                Name = "GroupUser"
+            };
+            var service = new Mock<IGroupUserService>();
+            service.Setup(x => x.GetById(2))
+                .ReturnsAsync(new GroupUser
+                {
+                    Id = 2,
+                    Name = GroupUser.Name
+                })
+                .Verifiable();
 
-            Mapper.Map(viewModel, fetchedGroupUser);
-            await GroupUserService.UpdateGroupUser(fetchedGroupUser);
-            return NoContent();
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
+
+            IActionResult result = await controller.Put(2, GroupUser) as NoContentResult;
+
+            Assert.IsNotNull(result);
+            service.VerifyAll();
         }
 
-        // DELETE api/GroupUser/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        public async Task DeleteGroupUser_RequiresPositiveId(int GroupUserId)
         {
-            if (id <= 0)
-            {
-                return BadRequest("A GroupUser id must be specified");
-            }
+            var service = new Mock<IGroupUserService>(MockBehavior.Strict);
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
 
-            if (await GroupUserService.DeleteGroupUser(id))
-            {
-                return Ok();
-            }
-            return NotFound();
+            IActionResult result = await controller.Delete(GroupUserId);
+
+            Assert.IsTrue(result is BadRequestObjectResult);
+        }
+
+        [TestMethod]
+        public async Task DeleteGroupUser_ReturnsNotFoundWhenTheGroupUserFailsToDelete()
+        {
+            var service = new Mock<IGroupUserService>();
+            service.Setup(x => x.DeleteGroupUser(2))
+                .ReturnsAsync(false)
+                .Verifiable();
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
+
+            IActionResult result = await controller.Delete(2);
+
+            Assert.IsTrue(result is NotFoundResult);
+            service.VerifyAll();
+        }
+
+        [TestMethod]
+        public async Task DeleteGroupUser_ReturnsOkWhenGroupUserIsDeleted()
+        {
+            var service = new Mock<IGroupUserService>();
+            service.Setup(x => x.DeleteGroupUser(2))
+                .ReturnsAsync(true)
+                .Verifiable();
+            var controller = new GroupUsersController(service.Object, Mapper.Instance);
+
+            IActionResult result = await controller.Delete(2);
+
+            Assert.IsTrue(result is OkResult);
+            service.VerifyAll();
+        }
+
+        private static void AssertAreEqual(GroupUserViewModel expected, GroupUser actual)
+        {
+            if (expected == null && actual == null) return;
+            if (expected == null || actual == null) Assert.Fail();
+
+            Assert.AreEqual(expected.Id, actual.Id);
+            Assert.AreEqual(expected.Name, actual.Name);
         }
     }
 }

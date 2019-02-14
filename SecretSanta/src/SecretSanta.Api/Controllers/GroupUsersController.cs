@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SecretSanta.Api.Services.Interfaces;
 using SecretSanta.Domain.Services.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,11 +14,13 @@ namespace SecretSanta.Api.Controllers
     [Route("api/[controller]")]
     public class GroupUsersController : ControllerBase
     {
-        private IGroupService GroupService { get; }
+        private IGroupUserService GroupService { get; set; }
+        private IMapper Mapper { get; set; }
 
-        public GroupUsersController(IGroupService groupService)
+        public GroupUsersController(IGroupUserService groupService, IMapper mapper)
         {
             GroupService = groupService;
+            Mapper = mapper;
         }
 
         [HttpPut("{groupId}")]
