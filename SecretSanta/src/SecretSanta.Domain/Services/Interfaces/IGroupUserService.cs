@@ -8,6 +8,6 @@ namespace SecretSanta.Api.Services.Interfaces
 {
     public interface IGroupUserService
     {
-
+        //TODO
     }
 }
