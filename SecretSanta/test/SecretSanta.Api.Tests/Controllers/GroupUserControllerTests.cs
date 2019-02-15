@@ -23,8 +23,9 @@ namespace SecretSanta.Api.Tests.Controllers
         {
             var GroupUser1 = new GroupUser
             {
-                Id = 1,
-                Name = "GroupUser 1"
+                UserId = 1,
+                Name = "GroupUser 1",
+                G
             };
             var GroupUser2 = new GroupUser
             {
