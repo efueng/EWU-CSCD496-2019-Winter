@@ -20,6 +20,9 @@ namespace SecretSanta.Domain.Services
         }
         public async Task<bool> GeneratePairings(int groupId)
         {
+            //id is primary key
+            //singeordefault will throw if 2 or more
+            //firstordefault could grab 0 or 1 rows, but don't throw
             Group group = await DbContext.Groups
                 .Include(x => x.GroupUsers)
                 .FirstOrDefaultAsync(x => x.Id == groupId);
@@ -32,6 +35,12 @@ namespace SecretSanta.Domain.Services
             }
 
             // Invoke GetPairings on separate thread
+            /* equivalent
+	        foreach (Pairing pair in myPairings)
+	        {
+	            await DbContext.Pairings.AddAsync(pair);
+	        }
+	        */
             Task<List<Pairing>> task = Task.Run(() => GetPairings(userIds));
             List<Pairing> pairings = await task;
 

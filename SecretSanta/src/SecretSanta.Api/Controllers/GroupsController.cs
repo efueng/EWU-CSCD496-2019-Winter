@@ -75,8 +75,8 @@ namespace SecretSanta.Api.Controllers
                 return NotFound();
             }
 
-            Mapper.Map(viewModel, group);
-            await GroupService.UpdateGroup(group);
+            //Mapper.Map(viewModel, group);
+            await GroupService.UpdateGroup(Mapper.Map<Group>(viewModel));
 
             return NoContent();
         }

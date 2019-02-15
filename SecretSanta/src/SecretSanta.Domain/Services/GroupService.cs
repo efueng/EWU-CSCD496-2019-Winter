@@ -77,7 +77,7 @@ namespace SecretSanta.Domain.Services
                 .Include(x => x.GroupUsers)
                 .FirstOrDefaultAsync(x => x.Id == groupId);
 
-            GroupUser mapping = foundGroup?.GroupUsers.FirstOrDefault(x => x.UserId == userId);
+            GroupUser mapping = foundGroup?.GroupUsers?.FirstOrDefault(x => x.UserId == userId);
 
             if (mapping == null) return false;
 

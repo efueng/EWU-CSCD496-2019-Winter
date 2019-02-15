@@ -27,7 +27,7 @@ namespace SecretSanta.Api.Controllers
 
         // GET api/Gift/5
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetGiftForUser(int userId)
+        public async Task<IActionResult> GetGiftsForUser(int userId)
         {
             if (userId <= 0)
             {
@@ -37,5 +37,6 @@ namespace SecretSanta.Api.Controllers
 
             return Ok(databaseUsers.Select(x => Mapper.Map<GiftViewModel>(x)).ToList());
         }
+
     }
 }
