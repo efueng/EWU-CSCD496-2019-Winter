@@ -12,10 +12,25 @@ namespace SecretSanta.Api.Tests
         public List<Gift> ToReturn { get; set; }
         public int GetGiftsForUser_UserId { get; set; }
 
+        public Task<Gift> AddGiftToUser(int userId, Gift gift)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<Gift>> GetGiftsForUser(int userId)
         {
             GetGiftsForUser_UserId = userId;
             return Task.FromResult(ToReturn);
+        }
+
+        public Task<bool> RemoveGift(Gift gift)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Gift> UpdateGiftForUser(int userId, Gift gift)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -68,7 +68,7 @@ namespace SecretSanta.Api.Controllers
         }
 
         // PUT api/User/5
-        [HttpPut]
+        [HttpPut("{userId}")]
         public async Task<IActionResult> Put(int id, UserInputViewModel viewModel)
         {
             if (viewModel == null || id <= 0)

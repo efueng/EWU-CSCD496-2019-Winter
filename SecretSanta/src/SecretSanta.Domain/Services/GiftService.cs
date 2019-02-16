@@ -46,7 +46,7 @@ namespace SecretSanta.Domain.Services
 
         public async Task<bool> RemoveGift(Gift gift)
         {
-            if (gift == null) return false; ;
+            if (gift == null) return false;
 
             DbContext.Gifts.Remove(gift);
             await DbContext.SaveChangesAsync();
