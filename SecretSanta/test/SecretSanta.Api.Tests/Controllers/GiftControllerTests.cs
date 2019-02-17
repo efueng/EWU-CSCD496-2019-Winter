@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using SecretSanta.Api.Controllers;
 using SecretSanta.Api.Models;
 using SecretSanta.Api.ViewModels;
 using SecretSanta.Domain.Models;
+using SecretSanta.Domain.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +66,65 @@ namespace SecretSanta.Api.Tests.Controllers
             Assert.IsNotNull(result);
             //This check ensures that the service was not called
             Assert.AreEqual(0, testService.GetGiftsForUser_UserId);
+        }
+
+        [TestMethod]
+        [DataRow(-1, null)]
+        [DataRow(0, null)]
+        [DataRow(1, null)]
+        public async Task UpdateGiftViaApi_InvalidParameters_ReturnsBadRequest(int userId, GiftViewModel viewModel)
+        {
+            // Arrange
+            var service = new Mock<IGiftService>(MockBehavior.Strict);
+            var controller = new GiftsController(service.Object, Mapper.Instance);
+
+            // Act
+            var result = await controller.UpdateGiftForUser(userId, viewModel);
+
+            // Assert
+            Assert.IsTrue(result is BadRequestResult);
+        }
+
+        [TestMethod]
+        public async Task UpdateGiftViaApi_ValidParameters_ReturnsUpdatedGift()
+        {
+            // Arrange
+            var gift = new GiftViewModel
+            {
+                Description = "Xbox",
+            };
+
+            var updatedGift = new GiftViewModel
+            {
+                Description = "Updated"
+            };
+
+            var service = new Mock<IGiftService>();// MockBehavior.Strict);
+            service.Setup(x => x.UpdateGiftForUser(It.IsAny<int>(), It.IsAny<Gift>()))
+                .ReturnsAsync(new Gift { Description = "Updated" })
+                .Verifiable();
+
+            var controller = new GiftsController(service.Object, Mapper.Instance);
+
+            //await controller.Post(gift);
+
+            // Act
+            IActionResult result = await controller.UpdateGiftForUser(1, updatedGift) as NoContentResult;
+
+            //Assert.IsTrue(result is NoContentResult);
+            Assert.IsNotNull(result);
+            service.VerifyAll();
+        }
+
+        [TestMethod]
+        public async Task DeleteGiftViaApi_RequiresValidGift()
+        {
+            var service = new Mock<IGiftService>(MockBehavior.Strict);
+            var controller = new GiftsController(service.Object, Mapper.Instance);
+
+            IActionResult result = await controller.DeleteGift(null);
+
+            Assert.IsTrue(result is BadRequestResult);
         }
     }
 }

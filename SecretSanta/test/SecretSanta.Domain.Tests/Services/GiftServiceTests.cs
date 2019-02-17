@@ -138,7 +138,7 @@ namespace SecretSanta.Domain.Tests.Services
                 List<User> users = await userService.FetchAll();
                 List<Gift> gifts = await giftService.GetGiftsForUser(users[0].Id);
 
-                await giftService.RemoveGift(gifts[0]);
+                await giftService.DeleteGift(gifts[0]);
             }
 
             using (var context = new ApplicationDbContext(Options))

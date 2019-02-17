@@ -37,12 +37,6 @@ namespace SecretSanta.Domain.Services
             }
 
             // Invoke GetPairings on separate thread
-            /* equivalent
-	        foreach (Pairing pair in myPairings)
-	        {
-	            await DbContext.Pairings.AddAsync(pair);
-	        }
-	        */
             Task<List<Pairing>> task = Task.Run(() => GetPairings(userIds, groupId));
             List<Pairing> pairings = await task;
 
@@ -63,12 +57,13 @@ namespace SecretSanta.Domain.Services
 
             for (int idx = 0; idx < userIds.Count; idx++)
             {
-                index = Random.Next(maxValue--);
+                //index = Random.Next(maxValue--);
+                index = Random.Next(userIds.Min(), userIds.Max());
 
                 if (randomIndices.Contains(index))
                 {
                     idx--;
-                    maxValue++;
+                    //maxValue++;
                 }
                 else
                 {

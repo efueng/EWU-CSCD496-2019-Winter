@@ -65,17 +65,17 @@ namespace SecretSanta.Api.Controllers
         // DELETE api/Gifts
         [HttpDelete]
         [Produces(typeof(bool))]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteGift(GiftViewModel viewModel)
         {
             if (viewModel == null)
             {
-                return Ok("Parameter viewModel cannot be null.");
-                //return BadRequest();
+                //return Ok("Parameter viewModel cannot be null.");
+                return BadRequest();
             }
 
-            return Ok(await GiftService.RemoveGift(Mapper.Map<Gift>(viewModel)));
+            return Ok(await GiftService.DeleteGift(Mapper.Map<Gift>(viewModel)));
         }
 
         // PUT api/Gifts

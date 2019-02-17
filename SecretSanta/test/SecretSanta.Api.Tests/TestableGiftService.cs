@@ -17,6 +17,11 @@ namespace SecretSanta.Api.Tests
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteGift(Gift gift)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<Gift>> GetGiftsForUser(int userId)
         {
             GetGiftsForUser_UserId = userId;

@@ -44,7 +44,7 @@ namespace SecretSanta.Domain.Services
             return await DbContext.Gifts.Where(g => g.UserId == userId).ToListAsync();
         }
 
-        public async Task<bool> RemoveGift(Gift gift)
+        public async Task<bool> DeleteGift(Gift gift)
         {
             if (gift == null) return false;
 
