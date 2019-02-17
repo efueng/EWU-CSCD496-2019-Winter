@@ -13,13 +13,19 @@ namespace SecretSanta.Domain.Services
     {
         private ApplicationDbContext DbContext { get; set; }
         private IPairingService Service { get; set; }
-        public PairingService(ApplicationDbContext dbContext, IPairingService service)
+        private IRandomService Random { get; set; }
+        public PairingService(ApplicationDbContext dbContext, IPairingService service, IRandomService random)
         {
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             Service = service ?? throw new ArgumentNullException(nameof(service));
+            Random = random ?? throw new ArgumentNullException(nameof(random));
         }
-        public async Task<bool> GeneratePairings(int groupId)
+        public async Task<List<Pairing>> GeneratePairings(int groupId)
         {
+            if (groupId <= 0)
+            {
+                return null;
+            }
             //id is primary key
             //singeordefault will throw if 2 or more
             //firstordefault could grab 0 or 1 rows, but don't throw
@@ -31,7 +37,7 @@ namespace SecretSanta.Domain.Services
 
             if (userIds == null || userIds.Count < 2)
             {
-                return false;
+                return null;
             }
 
             // Invoke GetPairings on separate thread
@@ -41,17 +47,21 @@ namespace SecretSanta.Domain.Services
 	            await DbContext.Pairings.AddAsync(pair);
 	        }
 	        */
-            Task<List<Pairing>> task = Task.Run(() => GetPairings(userIds));
+            Task<List<Pairing>> task = Task.Run(() => GetPairings(userIds, groupId));
             List<Pairing> pairings = await task;
 
-            await DbContext.AddRangeAsync();
+            await DbContext.AddRangeAsync(pairings);
             await DbContext.SaveChangesAsync();
 
-            return true;
+            return pairings;
         }
 
-        private List<Pairing> GetPairings(List<int> userIds)
+        private List<Pairing> GetPairings(List<int> userIds, int groupId)
         {
+            int index = 0;
+            var indices = Enumerable.Range(0, userIds.Count).ToList();
+            var randomIndices = new List<int>();
+
             var pairings = new List<Pairing>();
 
             for (int idx = 0; idx < userIds.Count - 1; idx++)
