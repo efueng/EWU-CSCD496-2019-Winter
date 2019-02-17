@@ -1,4 +1,8 @@
-﻿using SecretSanta.Domain.Services.Interfaces;
+﻿/*
+ * Heavily influenced by https://stackoverflow.com/questions/3049467/is-c-sharp-random-number-generator-thread-safe
+ */
+
+using SecretSanta.Domain.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,19 +11,19 @@ namespace SecretSanta.Domain.Services
 {
     public class RandomService : IRandomService
     {
-        private static readonly Random global = new Random();
-        [ThreadStatic] private static Random local;
+        private static readonly Random globalRandom = new Random();
+        [ThreadStatic] private static Random localRandom;
 
         public RandomService()
         {
-            if (local == null)
+            if (localRandom == null)
             {
-                lock (global)
+                lock (globalRandom)
                 {
-                    if (local == null)
+                    if (localRandom == null)
                     {
-                        int seed = global.Next();
-                        local = new Random(seed);
+                        int seed = globalRandom.Next();
+                        localRandom = new Random(seed);
                     }
                 }
             }
@@ -27,17 +31,17 @@ namespace SecretSanta.Domain.Services
 
         public int Next()
         {
-            return local.Next();
+            return localRandom.Next();
         }
 
         public int Next(int maxValue)
         {
-            return local.Next(maxValue);
+            return localRandom.Next(maxValue);
         }
 
         public int Next(int minValue, int maxValue)
         {
-            return local.Next(minValue, maxValue);
+            return localRandom.Next(minValue, maxValue);
         }
     }
 }

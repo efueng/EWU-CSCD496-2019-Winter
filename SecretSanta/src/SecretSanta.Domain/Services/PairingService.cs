@@ -12,20 +12,16 @@ namespace SecretSanta.Domain.Services
     public class PairingService : IPairingService
     {
         private ApplicationDbContext DbContext { get; set; }
-        private IPairingService Service { get; set; }
-        private IRandomService Random { get; set; }
-        public PairingService(ApplicationDbContext dbContext, IPairingService service, IRandomService random)
+        //private IPairingService Service { get; set; }
+        private RandomService Random { get; set; }
+        public PairingService(ApplicationDbContext dbContext)//, IPairingService service, IRandomService random)
         {
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            Service = service ?? throw new ArgumentNullException(nameof(service));
-            Random = random ?? throw new ArgumentNullException(nameof(random));
+            //Service = service ?? throw new ArgumentNullException(nameof(service));
+            Random = new RandomService();// random ?? throw new ArgumentNullException(nameof(random));
         }
         public async Task<List<Pairing>> GeneratePairings(int groupId)
         {
-            if (groupId <= 0)
-            {
-                return null;
-            }
             //id is primary key
             //singeordefault will throw if 2 or more
             //firstordefault could grab 0 or 1 rows, but don't throw
@@ -59,24 +55,44 @@ namespace SecretSanta.Domain.Services
         private List<Pairing> GetPairings(List<int> userIds, int groupId)
         {
             int index = 0;
+            int maxValue = userIds.Count - 1;
             var indices = Enumerable.Range(0, userIds.Count).ToList();
             var randomIndices = new List<int>();
 
             var pairings = new List<Pairing>();
 
+            for (int idx = 0; idx < userIds.Count; idx++)
+            {
+                index = Random.Next(maxValue--);
+
+                if (randomIndices.Contains(index))
+                {
+                    idx--;
+                    maxValue++;
+                }
+                else
+                {
+                    randomIndices.Add(index);
+                }
+            }
+
             for (int idx = 0; idx < userIds.Count - 1; idx++)
             {
                 var pairing = new Pairing
                 {
-                    SantaId = userIds[idx],
-                    RecipientId = userIds[idx + 1]
+                    SantaId = randomIndices[idx],
+                    RecipientId = randomIndices[idx + 1],
+                    OriginGroupId = groupId
                 };
+
+                pairings.Add(pairing);
             }
 
             var lastPairing = new Pairing
             {
-                SantaId = userIds.Last(),
-                RecipientId = userIds.First()
+                SantaId = randomIndices.Last(),
+                RecipientId = randomIndices.First(),
+                OriginGroupId = groupId
             };
 
             pairings.Add(lastPairing);

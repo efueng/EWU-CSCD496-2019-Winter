@@ -25,17 +25,20 @@ namespace SecretSanta.Api.Controllers
         }
 
         // GET: api/Pairing
-        [HttpGet("{groupId}")]
-        public async Task<IActionResult> Get(int groupId)
+        [HttpPost("{groupId}")]
+        [Produces(typeof(List<PairingViewModel>))]
+        public async Task<IActionResult> Post(int groupId)
         {
             if (groupId <= 0)
             {
                 return BadRequest();
             }
 
-            if (await PairingService.GeneratePairings(groupId))
+            var pairings = (await PairingService.GeneratePairings(groupId)).Select(x => Mapper.Map<PairingViewModel>(x));
+
+            if (await PairingService.GeneratePairings(groupId) != null)
             {
-                return Ok();
+                return Created(nameof(Post), pairings);
             }
 
             return NotFound();

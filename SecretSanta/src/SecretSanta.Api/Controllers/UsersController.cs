@@ -30,9 +30,9 @@ namespace SecretSanta.Api.Controllers
         [Produces(typeof(ICollection<UserViewModel>))]
         public async Task<IActionResult> Get()
         {
-            List<User> users = await UserService.FetchAll();
-            return Ok(users.Select(x => Mapper.Map<UserViewModel>(x)));
-            //return Ok(UserService.FetchAll().Select(x => Mapper.Map<UserViewModel>(x)));
+            //List<User> users = await UserService.FetchAll();
+            //return Ok(users.Select(x => Mapper.Map<UserViewModel>(x)));
+            return Ok((await UserService.FetchAll()).Select(x => Mapper.Map<UserViewModel>(x)));
         }
 
         [HttpGet("{id}")]

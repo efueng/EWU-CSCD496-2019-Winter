@@ -59,17 +59,20 @@ namespace SecretSanta.Api.Controllers
             }
             List<Gift> databaseUsers = await GiftService.GetGiftsForUser(userId);
 
-            return Ok(databaseUsers.Select(x => Mapper.Map<GiftViewModel>(x)));
+            return Ok(databaseUsers.Select(x => Mapper.Map<GiftViewModel>(x)).ToList());
         }
 
         // DELETE api/Gifts
         [HttpDelete]
         [Produces(typeof(bool))]
-        public async Task<IActionResult> RemoveGift(GiftViewModel viewModel)
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteGift(GiftViewModel viewModel)
         {
             if (viewModel == null)
             {
-                return BadRequest();
+                return Ok("Parameter viewModel cannot be null.");
+                //return BadRequest();
             }
 
             return Ok(await GiftService.RemoveGift(Mapper.Map<Gift>(viewModel)));
