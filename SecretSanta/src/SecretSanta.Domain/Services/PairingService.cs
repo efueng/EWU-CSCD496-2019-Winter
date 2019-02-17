@@ -52,22 +52,20 @@ namespace SecretSanta.Domain.Services
             int maxValue = userIds.Count - 1;
             var indices = Enumerable.Range(0, userIds.Count).ToList();
             var randomIndices = new List<int>();
-
+            //var randomIndices = userIds.OrderBy()
             var pairings = new List<Pairing>();
 
             for (int idx = 0; idx < userIds.Count; idx++)
             {
-                //index = Random.Next(maxValue--);
                 index = Random.Next(userIds.Min(), userIds.Max());
 
-                if (randomIndices.Contains(index))
+                if (!randomIndices.Contains(index) && userIds.Contains(index))
                 {
-                    idx--;
-                    //maxValue++;
+                    randomIndices.Add(index);
                 }
                 else
                 {
-                    randomIndices.Add(index);
+                    idx--;
                 }
             }
 
