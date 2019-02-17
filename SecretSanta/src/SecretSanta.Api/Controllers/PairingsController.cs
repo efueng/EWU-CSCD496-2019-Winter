@@ -34,11 +34,12 @@ namespace SecretSanta.Api.Controllers
                 return BadRequest();
             }
 
-            var pairings = (await PairingService.GeneratePairings(groupId)).Select(x => Mapper.Map<PairingViewModel>(x));
-
-            if (await PairingService.GeneratePairings(groupId) != null)
+            //var pairings = (await PairingService.GeneratePairings(groupId)).Select(x => Mapper.Map<PairingViewModel>(x)).ToList();
+            List<Pairing> pairings = await PairingService.GeneratePairings(groupId);
+            List<PairingViewModel> viewModels = pairings.Select(x => Mapper.Map<PairingViewModel>(x)).ToList();
+            if (viewModels != null)
             {
-                return Created(nameof(Post), pairings);
+                return Created(nameof(Post), viewModels);
             }
 
             return NotFound();

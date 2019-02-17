@@ -63,9 +63,6 @@ namespace SecretSanta.Api.Tests.Controllers
 
             Pairings = await GetPairings(userIds, groupId);
 
-            //MockPairingService.Setup(x => x.GeneratePairings(groupId)).Returns(pairings);
-            //SetUpMockMapper();
-
             var service = new Mock<IPairingService>(MockBehavior.Strict);
             service.Setup(x => x.GeneratePairings(groupId))
                 .ReturnsAsync(Pairings)
@@ -74,7 +71,7 @@ namespace SecretSanta.Api.Tests.Controllers
             var controller = new PairingsController(service.Object, Mapper.Instance);
 
             var result = await controller.Post(groupId) as CreatedResult;
-            var resultPairings = result.Value as List<PairingViewModel>;
+            List<PairingViewModel> resultPairings = result.Value as List<PairingViewModel>;
             var firstPairing = resultPairings.First();
             var lastPairing = resultPairings.Last();
 
