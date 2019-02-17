@@ -15,9 +15,14 @@ namespace SecretSanta.Domain.Models
 
         public ThreadSafeRandom()
         {
+           
+        }
+
+        public int Next()
+        {
             if (localRandom == null)
             {
-                lock(globalRandom)
+                lock (globalRandom)
                 {
                     if (localRandom == null)
                     {
@@ -26,21 +31,8 @@ namespace SecretSanta.Domain.Models
                     }
                 }
             }
-        }
 
-        public int Next()
-        {
             return localRandom.Next();
-        }
-
-        public int Next(int maxValue)
-        {
-            return localRandom.Next(maxValue);
-        }
-
-        public int Next(int minValue, int maxValue)
-        {
-            return localRandom.Next(minValue, maxValue);
         }
     }
 }

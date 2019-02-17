@@ -12,19 +12,14 @@ namespace SecretSanta.Domain.Services
     public class PairingService : IPairingService
     {
         private ApplicationDbContext DbContext { get; set; }
-        //private IPairingService Service { get; set; }
-        private RandomService Random { get; set; }
-        public PairingService(ApplicationDbContext dbContext)//, IPairingService service, IRandomService random)
+        private ThreadSafeRandom Random { get; set; }
+        public PairingService(ApplicationDbContext dbContext)
         {
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            //Service = service ?? throw new ArgumentNullException(nameof(service));
-            Random = new RandomService();// random ?? throw new ArgumentNullException(nameof(random));
+            Random = new ThreadSafeRandom();
         }
         public async Task<List<Pairing>> GeneratePairings(int groupId)
         {
-            //id is primary key
-            //singeordefault will throw if 2 or more
-            //firstordefault could grab 0 or 1 rows, but don't throw
             Group group = await DbContext.Groups
                 .Include(x => x.GroupUsers)
                 .FirstOrDefaultAsync(x => x.Id == groupId);
@@ -48,33 +43,18 @@ namespace SecretSanta.Domain.Services
 
         private List<Pairing> GetPairings(List<int> userIds, int groupId)
         {
-            int index = 0;
-            int maxValue = userIds.Count - 1;
             var indices = Enumerable.Range(0, userIds.Count).ToList();
-            var randomIndices = new List<int>();
-            //var randomIndices = userIds.OrderBy()
+
+            // this was stolen from Kenny and Casey White
+            var randomizedIds = userIds.OrderBy(id => Random.Next()).ToList();
             var pairings = new List<Pairing>();
-
-            for (int idx = 0; idx < userIds.Count; idx++)
-            {
-                index = Random.Next(userIds.Min(), userIds.Max());
-
-                if (!randomIndices.Contains(index) && userIds.Contains(index))
-                {
-                    randomIndices.Add(index);
-                }
-                else
-                {
-                    idx--;
-                }
-            }
 
             for (int idx = 0; idx < userIds.Count - 1; idx++)
             {
                 var pairing = new Pairing
                 {
-                    SantaId = randomIndices[idx],
-                    RecipientId = randomIndices[idx + 1],
+                    SantaId = randomizedIds[idx],
+                    RecipientId = randomizedIds[idx + 1],
                     OriginGroupId = groupId
                 };
 
@@ -83,8 +63,8 @@ namespace SecretSanta.Domain.Services
 
             var lastPairing = new Pairing
             {
-                SantaId = randomIndices.Last(),
-                RecipientId = randomIndices.First(),
+                SantaId = randomizedIds.Last(),
+                RecipientId = randomizedIds.First(),
                 OriginGroupId = groupId
             };
 
