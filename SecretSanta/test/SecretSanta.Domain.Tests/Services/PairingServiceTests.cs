@@ -48,20 +48,30 @@ namespace SecretSanta.Domain.Tests.Services
                     LastName = "Fett"
                 };
 
-                Group group = new Group
+                Group group1 = new Group
                 {
-                    Name = "Group"
+                    Name = "Group1"
+                };
+
+                Group group2 = new Group
+                {
+                    Name = "Group2"
                 };
 
                 await userService.AddUser(user1);
                 await userService.AddUser(user2);
                 await userService.AddUser(user3);
 
-                await groupService.AddGroup(group);
+                await groupService.AddGroup(group1);
+                await groupService.AddGroup(group2);
 
-                await groupService.AddUserToGroup(group.Id, user1.Id);
-                await groupService.AddUserToGroup(group.Id, user2.Id);
-                await groupService.AddUserToGroup(group.Id, user3.Id);
+                await groupService.AddUserToGroup(group1.Id, user1.Id);
+                await groupService.AddUserToGroup(group1.Id, user2.Id);
+                await groupService.AddUserToGroup(group1.Id, user3.Id);
+
+                await groupService.AddUserToGroup(group2.Id, user1.Id);
+                await groupService.AddUserToGroup(group2.Id, user2.Id);
+                await groupService.AddUserToGroup(group2.Id, user3.Id);
             }
         }
 
@@ -106,6 +116,28 @@ namespace SecretSanta.Domain.Tests.Services
                 foreach (var p in pairings)
                 {
                     Assert.AreNotEqual<int>(p.SantaId, p.RecipientId);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task GeneratePairings_AddPairingsThatDifferOnlyByGroup()
+        {
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
+            {
+                PairingService pairingService = new PairingService(context);
+                List<Pairing> pairings1 = await pairingService.GeneratePairings(1);
+                List<Pairing> pairings2 = await pairingService.GeneratePairings(2);
+
+                List<int> pairing1UserIds = pairings1.Select(x => x.SantaId).ToList();
+                List<int> pairing2UserIds = pairings2.Select(x => x.SantaId).ToList();
+
+                Assert.AreEqual(pairings1.Select(x => x.OriginGroupId).First(), 1);
+                Assert.AreEqual(pairings2.Select(x => x.OriginGroupId).First(), 2);
+
+                foreach (int i in pairing1UserIds)
+                {
+                    Assert.IsTrue(pairing2UserIds.Contains(i));
                 }
             }
         }
