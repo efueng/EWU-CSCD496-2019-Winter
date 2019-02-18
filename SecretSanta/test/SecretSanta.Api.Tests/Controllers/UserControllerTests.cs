@@ -122,9 +122,6 @@ namespace SecretSanta.Api.Tests.Controllers
         {
             // Arrange
             var service = new Mock<IUserService>(MockBehavior.Strict);
-            //service.Setup(x => x.GetById(userId))
-            //    .ReturnsAsync(new User())
-            //    .Verifiable();
 
             var controller = new UsersController(service.Object, Mapper.Instance);
 
@@ -142,10 +139,7 @@ namespace SecretSanta.Api.Tests.Controllers
         public async Task GetUserByIdViaApi_UserNotFound_ReturnsNotFoundResult(int userId)
         {
             // Arrange
-            var service = new Mock<IUserService>();// MockBehavior.Strict);
-            //service.Setup(x => x.GetById(It.IsAny<int>()))
-            //    .ReturnsAsync(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)))
-            //    .Verifiable();
+            var service = new Mock<IUserService>();
             var controller = new UsersController(service.Object, Mapper.Instance);
 
             // Act
@@ -217,19 +211,16 @@ namespace SecretSanta.Api.Tests.Controllers
                 LastName = "User"
             };
 
-            var service = new Mock<IUserService>();// MockBehavior.Strict);
+            var service = new Mock<IUserService>();
             service.Setup(x => x.GetById(userId))
                 .ReturnsAsync(new User { FirstName = "Updated", LastName = "User" })
                 .Verifiable();
 
             var controller = new UsersController(service.Object, Mapper.Instance);
 
-            //await controller.Post(user);
-
             // Act
             IActionResult result = await controller.Put(userId, updatedUser) as NoContentResult;
-
-            //Assert.IsTrue(result is NoContentResult);
+            
             Assert.IsNotNull(result);
             service.VerifyAll();
         }

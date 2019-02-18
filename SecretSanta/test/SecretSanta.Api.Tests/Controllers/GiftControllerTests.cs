@@ -106,12 +106,9 @@ namespace SecretSanta.Api.Tests.Controllers
 
             var controller = new GiftsController(service.Object, Mapper.Instance);
 
-            //await controller.Post(gift);
-
             // Act
             IActionResult result = await controller.UpdateGiftForUser(1, updatedGift) as NoContentResult;
-
-            //Assert.IsTrue(result is NoContentResult);
+            
             Assert.IsNotNull(result);
             service.VerifyAll();
         }

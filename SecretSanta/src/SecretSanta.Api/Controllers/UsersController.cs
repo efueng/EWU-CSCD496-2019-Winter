@@ -30,8 +30,6 @@ namespace SecretSanta.Api.Controllers
         [Produces(typeof(ICollection<UserViewModel>))]
         public async Task<IActionResult> Get()
         {
-            //List<User> users = await UserService.FetchAll();
-            //return Ok(users.Select(x => Mapper.Map<UserViewModel>(x)));
             return Ok((await UserService.FetchAll()).Select(x => Mapper.Map<UserViewModel>(x)));
         }
 
@@ -80,9 +78,7 @@ namespace SecretSanta.Api.Controllers
             {
                 return NotFound();
             }
-
-            //Mapper.Map(viewModel, fetchedUser);
-            //await UserService.UpdateUser(fetchedUser);
+            
             await UserService.UpdateUser(Mapper.Map<User>(viewModel));
             return NoContent();
         }
