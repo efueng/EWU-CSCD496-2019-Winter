@@ -18,8 +18,14 @@ namespace SecretSanta.Domain.Services
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             Random = new ThreadSafeRandom();
         }
+
         public async Task<List<Pairing>> GeneratePairings(int groupId)
         {
+            if (groupId <= 0)
+            {
+                throw new ArgumentOutOfRangeException("groupId must be at least 1.", nameof(groupId));
+            }
+
             Group group = await DbContext.Groups
                 .Include(x => x.GroupUsers)
                 .FirstOrDefaultAsync(x => x.Id == groupId);

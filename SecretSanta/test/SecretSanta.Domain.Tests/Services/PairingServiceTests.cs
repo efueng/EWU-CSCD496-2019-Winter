@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,14 +17,96 @@ namespace SecretSanta.Domain.Tests.Services
         {
             using (var context = new ApplicationDbContext(Options))
             {
-                var groupService = new GroupService(context);
-                var userService = new UserService(context);
+                GroupService groupService = new GroupService(context);
+                UserService userService = new UserService(context);
 
-                var user1 = new User
+                User user1 = new User
                 {
+                    Id = 42,
                     FirstName = "Edmond",
                     LastName = "Dantes"
                 };
+
+                User user2 = new User
+                {
+                    Id = 9938,
+                    FirstName = "Fernand",
+                    LastName = "Mondego"
+                };
+
+                User user3 = new User
+                {
+                    Id = 1,
+                    FirstName = "Wedge",
+                    LastName = "Antilles"
+                };
+
+                User user4 = new User
+                {
+                    Id = 99,
+                    FirstName = "Boba",
+                    LastName = "Fett"
+                };
+
+                Group group = new Group
+                {
+                    Name = "Group"
+                };
+
+                await userService.AddUser(user1);
+                await userService.AddUser(user2);
+                await userService.AddUser(user3);
+
+                await groupService.AddGroup(group);
+
+                await groupService.AddUserToGroup(group.Id, user1.Id);
+                await groupService.AddUserToGroup(group.Id, user2.Id);
+                await groupService.AddUserToGroup(group.Id, user3.Id);
+            }
+        }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        public async Task GeneratPairings_RequiresPositiveGroupId(int groupId)
+        {
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
+            {
+                PairingService pairingService = new PairingService(context);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () => 
+                    await pairingService.GeneratePairings(groupId));
+            }
+        }
+
+
+        [TestMethod]
+        public async Task GeneratePairings_GeneratesUniquePairings()
+        {
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
+            {
+                PairingService pairingService = new PairingService(context);
+                List<Pairing> pairings = await pairingService.GeneratePairings(1);
+                
+                var santaIds = pairings.Select(x => x.SantaId).ToList();
+                var recipientIds = pairings.Select(x => x.RecipientId).ToList();
+
+                Assert.AreEqual(santaIds.Distinct().Count(), santaIds.Count);
+                Assert.AreEqual(recipientIds.Distinct().Count(), recipientIds.Count);
+            }
+        }
+
+        [TestMethod]
+        public async Task GeneratePairings_ContainNoSelfGifters()
+        {
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
+            {
+                PairingService pairingService = new PairingService(context);
+                List<Pairing> pairings = await pairingService.GeneratePairings(1);
+
+                foreach (var p in pairings)
+                {
+                    Assert.AreNotEqual<int>(p.SantaId, p.RecipientId);
+                }
             }
         }
     }
