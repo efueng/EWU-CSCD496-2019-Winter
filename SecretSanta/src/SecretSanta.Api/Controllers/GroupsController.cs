@@ -30,9 +30,9 @@ namespace SecretSanta.Api.Controllers
         [Produces(typeof(ICollection<GroupViewModel>))]
         public async Task<IActionResult> Get()
         {
-            List<Group> groups = await GroupService.FetchAll();
-            return Ok(groups.Select(x => Mapper.Map<GroupViewModel>(x)));
-            //return await Ok(GroupService.FetchAll().Select(x => Mapper.Map<GroupViewModel>(x)));
+            return Ok((await GroupService.FetchAll())
+                .Select(x => Mapper.Map<GroupViewModel>(x))
+                .ToList());
         }
 
         [HttpGet("{id}")]
@@ -74,8 +74,7 @@ namespace SecretSanta.Api.Controllers
             {
                 return NotFound();
             }
-
-            //Mapper.Map(viewModel, group);
+            
             await GroupService.UpdateGroup(Mapper.Map<Group>(viewModel));
 
             return NoContent();
