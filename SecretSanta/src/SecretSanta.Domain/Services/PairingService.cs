@@ -49,8 +49,6 @@ namespace SecretSanta.Domain.Services
 
         private List<Pairing> GetPairings(List<int> userIds, int groupId)
         {
-            var indices = Enumerable.Range(0, userIds.Count).ToList();
-
             // this was stolen from Kenny and Casey White
             var randomizedIds = userIds.OrderBy(id => Random.Next()).ToList();
             var pairings = new List<Pairing>();

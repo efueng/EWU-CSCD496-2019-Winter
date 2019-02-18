@@ -61,6 +61,7 @@ namespace SecretSanta.Domain.Tests.Services
                 await userService.AddUser(user1);
                 await userService.AddUser(user2);
                 await userService.AddUser(user3);
+                await userService.AddUser(user4);
 
                 await groupService.AddGroup(group1);
                 await groupService.AddGroup(group2);
@@ -68,10 +69,12 @@ namespace SecretSanta.Domain.Tests.Services
                 await groupService.AddUserToGroup(group1.Id, user1.Id);
                 await groupService.AddUserToGroup(group1.Id, user2.Id);
                 await groupService.AddUserToGroup(group1.Id, user3.Id);
+                await groupService.AddUserToGroup(group1.Id, user4.Id);
 
                 await groupService.AddUserToGroup(group2.Id, user1.Id);
                 await groupService.AddUserToGroup(group2.Id, user2.Id);
                 await groupService.AddUserToGroup(group2.Id, user3.Id);
+                await groupService.AddUserToGroup(group2.Id, user4.Id);
             }
         }
 
@@ -100,8 +103,8 @@ namespace SecretSanta.Domain.Tests.Services
                 var santaIds = pairings.Select(x => x.SantaId).ToList();
                 var recipientIds = pairings.Select(x => x.RecipientId).ToList();
 
-                Assert.AreEqual(santaIds.Distinct().Count(), santaIds.Count);
-                Assert.AreEqual(recipientIds.Distinct().Count(), recipientIds.Count);
+                Assert.AreEqual(4, santaIds.Distinct().Count());
+                Assert.AreEqual(4, recipientIds.Distinct().Count());
             }
         }
 
