@@ -43,12 +43,20 @@ namespace SecretSanta.Domain.Services
 
         public async Task<List<User>> GetUsers(int groupId)
         {
+<<<<<<< refs/remotes/intellitect/Assignment6
             Group group = await DbContext.Groups.SingleOrDefaultAsync(x => x.Id == groupId);
             List<User> users = group.GroupUsers
                 .Select(x => x.User)
                 .ToList();
 
             return users;
+=======
+            return await DbContext.Groups
+                .Where(x => x.Id == groupId)
+                .SelectMany(x => x.GroupUsers)
+                .Select(x => x.User)
+                .ToListAsync();
+>>>>>>> Initial start of code for assignment 7
         }
 
         public async Task<bool> AddUserToGroup(int groupId, int userId)

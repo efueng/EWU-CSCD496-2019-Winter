@@ -25,6 +25,25 @@ namespace SecretSanta.Api.Controllers
             Mapper = mapper;
         }
 
+        public async Task<ActionResult<GiftViewModel>> GetGift(int id)
+        {
+            var gift = await GiftService.GetGift(id);
+
+            if (gift == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(Mapper.Map<GiftViewModel>(gift));
+        }
+
+        public async Task<ActionResult<GiftViewModel>> CreateGift(GiftInputViewModel viewModel)
+        {
+            var createdGift = await GiftService.AddGift(Mapper.Map<Gift>(viewModel));
+
+            return CreatedAtAction(nameof(GetGift), new { id = createdGift.Id }, Mapper.Map<GiftViewModel>(createdGift));
+        }
+
         // GET api/Gift/5
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetGiftForUser(int userId)

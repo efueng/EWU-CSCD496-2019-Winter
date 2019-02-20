@@ -39,7 +39,11 @@ namespace SecretSanta.Api.Tests.Controllers
 
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
+<<<<<<< refs/remotes/intellitect/Assignment6
             OkObjectResult result = await controller.Get() as OkObjectResult;
+=======
+            var result = (await controller.Get()).Result as OkObjectResult;
+>>>>>>> Initial start of code for assignment 7
 
             List<GroupViewModel> groups = ((IEnumerable<GroupViewModel>)result.Value).ToList();
 
@@ -55,8 +59,12 @@ namespace SecretSanta.Api.Tests.Controllers
             var service = new Mock<IGroupService>(MockBehavior.Strict);
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
+<<<<<<< refs/remotes/intellitect/Assignment6
 
             BadRequestResult result = await controller.Post(null) as BadRequestResult;
+=======
+            var result = (await controller.Post(null)).Result as BadRequestResult;
+>>>>>>> Initial start of code for assignment 7
 
             Assert.IsNotNull(result);
         }
@@ -79,7 +87,11 @@ namespace SecretSanta.Api.Tests.Controllers
 
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
+<<<<<<< refs/remotes/intellitect/Assignment6
             CreatedAtActionResult result = await controller.Post(group) as CreatedAtActionResult;
+=======
+            var result = (await controller.Post(group)).Result as CreatedAtActionResult;
+>>>>>>> Initial start of code for assignment 7
             var resultValue = result.Value as GroupViewModel;
 
             Assert.IsNotNull(resultValue);
@@ -95,7 +107,11 @@ namespace SecretSanta.Api.Tests.Controllers
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
 
+<<<<<<< refs/remotes/intellitect/Assignment6
             BadRequestResult result = await controller.Put(1, null) as BadRequestResult;
+=======
+            var result = (await controller.Put(1, null)) as BadRequestResult;
+>>>>>>> Initial start of code for assignment 7
 
             Assert.IsNotNull(result);
         }
@@ -118,7 +134,11 @@ namespace SecretSanta.Api.Tests.Controllers
 
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
+<<<<<<< refs/remotes/intellitect/Assignment6
             NoContentResult result = await controller.Put(2, group) as NoContentResult;
+=======
+            var result = (await controller.Put(2, group)) as NoContentResult;
+>>>>>>> Initial start of code for assignment 7
 
             Assert.IsNotNull(result);
             service.VerifyAll();
@@ -132,7 +152,11 @@ namespace SecretSanta.Api.Tests.Controllers
             var service = new Mock<IGroupService>(MockBehavior.Strict);
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
+<<<<<<< refs/remotes/intellitect/Assignment6
             IActionResult result = await controller.Delete(groupId);
+=======
+            var result = await controller.Delete(groupId);
+>>>>>>> Initial start of code for assignment 7
 
             Assert.IsTrue(result is BadRequestObjectResult);
         }
@@ -146,14 +170,22 @@ namespace SecretSanta.Api.Tests.Controllers
                 .Verifiable();
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
+<<<<<<< refs/remotes/intellitect/Assignment6
             IActionResult result = await controller.Delete(2);
+=======
+            var result = await controller.Delete(2);
+>>>>>>> Initial start of code for assignment 7
 
             Assert.IsTrue(result is NotFoundResult);
             service.VerifyAll();
         }
 
         [TestMethod]
+<<<<<<< refs/remotes/intellitect/Assignment6
         public async Task DeleteGroup_ReturnsOkWhenGroupIsDeletedAsync()
+=======
+        public async Task DeleteGroup_ReturnsOkWhenGroupIsDeleted()
+>>>>>>> Initial start of code for assignment 7
         {
             var service = new Mock<IGroupService>();
             service.Setup(x => x.DeleteGroup(2))
@@ -161,7 +193,11 @@ namespace SecretSanta.Api.Tests.Controllers
                 .Verifiable();
             var controller = new GroupsController(service.Object, Mapper.Instance);
 
+<<<<<<< refs/remotes/intellitect/Assignment6
             IActionResult result = await controller.Delete(2);
+=======
+            var result = await controller.Delete(2);
+>>>>>>> Initial start of code for assignment 7
 
             Assert.IsTrue(result is OkResult);
             service.VerifyAll();
