@@ -25,6 +25,7 @@ namespace SecretSanta.Api.Controllers
             Mapper = mapper;
         }
 
+        [HttpGet]
         public async Task<ActionResult<GiftViewModel>> GetGift(int id)
         {
             var gift = await GiftService.GetGift(id);
@@ -37,6 +38,7 @@ namespace SecretSanta.Api.Controllers
             return Ok(Mapper.Map<GiftViewModel>(gift));
         }
 
+        [HttpPost]
         public async Task<ActionResult<GiftViewModel>> CreateGift(GiftInputViewModel viewModel)
         {
             var createdGift = await GiftService.AddGift(Mapper.Map<Gift>(viewModel));
@@ -45,8 +47,13 @@ namespace SecretSanta.Api.Controllers
         }
 
         // GET api/Gift/5
+<<<<<<< refs/remotes/intellitect/Assignment6
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetGiftForUser(int userId)
+=======
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<ICollection<GiftViewModel>>> GetGiftsForUser(int userId)
+>>>>>>> Updated with logging and cleaned up some of the migrations.
         {
             if (userId <= 0)
             {

@@ -28,12 +28,16 @@ namespace SecretSanta.Api.Controllers
         // GET api/User
         [HttpGet]
 <<<<<<< refs/remotes/intellitect/Assignment6
+<<<<<<< refs/remotes/intellitect/Assignment6
         [Produces(typeof(ICollection<UserViewModel>))]
         public async Task<IActionResult> Get()
         {
             List<User> users = await UserService.FetchAll();
 =======
         public async Task<ActionResult<UserViewModel>> Get()
+=======
+        public async Task<ActionResult<ICollection<UserViewModel>>> GetAllUsers()
+>>>>>>> Updated with logging and cleaned up some of the migrations.
         {
             var users = await UserService.FetchAll();
 >>>>>>> Initial start of code for assignment 7
@@ -41,7 +45,7 @@ namespace SecretSanta.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserViewModel>> Get(int id)
+        public async Task<ActionResult<UserViewModel>> GetUser(int id)
         {
             var fetchedUser = await UserService.GetById(id);
             if (fetchedUser == null)
@@ -55,11 +59,15 @@ namespace SecretSanta.Api.Controllers
         // POST api/User
         [HttpPost]
 <<<<<<< refs/remotes/intellitect/Assignment6
+<<<<<<< refs/remotes/intellitect/Assignment6
         [Produces(typeof(UserViewModel))]
         public async Task<IActionResult> Post(UserInputViewModel viewModel)
 =======
         public async Task<ActionResult<UserViewModel>> Post(UserInputViewModel viewModel)
 >>>>>>> Initial start of code for assignment 7
+=======
+        public async Task<ActionResult<UserViewModel>> CreateUser(UserInputViewModel viewModel)
+>>>>>>> Updated with logging and cleaned up some of the migrations.
         {
             if (User == null)
             {
@@ -72,16 +80,20 @@ namespace SecretSanta.Api.Controllers
             var createdUser = await UserService.AddUser(Mapper.Map<User>(viewModel));
 >>>>>>> Initial start of code for assignment 7
 
-            return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, Mapper.Map<UserViewModel>(createdUser));
+            return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, Mapper.Map<UserViewModel>(createdUser));
         }
 
         // PUT api/User/5
         [HttpPut]
 <<<<<<< refs/remotes/intellitect/Assignment6
+<<<<<<< refs/remotes/intellitect/Assignment6
         public async Task<IActionResult> Put(int id, UserInputViewModel viewModel)
 =======
         public async Task<ActionResult> Put(int id, UserInputViewModel viewModel)
 >>>>>>> Initial start of code for assignment 7
+=======
+        public async Task<ActionResult> UpdateUser(int id, UserInputViewModel viewModel)
+>>>>>>> Updated with logging and cleaned up some of the migrations.
         {
             if (viewModel == null)
             {
@@ -105,10 +117,14 @@ namespace SecretSanta.Api.Controllers
         // DELETE api/User/5
         [HttpDelete("{id}")]
 <<<<<<< refs/remotes/intellitect/Assignment6
+<<<<<<< refs/remotes/intellitect/Assignment6
         public async Task<IActionResult> Delete(int id)
 =======
         public async Task<ActionResult> Delete(int id)
 >>>>>>> Initial start of code for assignment 7
+=======
+        public async Task<ActionResult> DeleteUser(int id)
+>>>>>>> Updated with logging and cleaned up some of the migrations.
         {
             if (id <= 0)
             {
