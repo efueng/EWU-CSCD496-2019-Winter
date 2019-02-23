@@ -47,13 +47,8 @@ namespace SecretSanta.Api.Controllers
         }
 
         // GET api/Gift/5
-<<<<<<< refs/remotes/intellitect/Assignment6
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetGiftForUser(int userId)
-=======
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<ICollection<GiftViewModel>>> GetGiftsForUser(int userId)
->>>>>>> Updated with logging and cleaned up some of the migrations.
         {
             if (userId <= 0)
             {

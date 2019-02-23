@@ -20,11 +20,7 @@ namespace SecretSanta.Api.Controllers
         }
 
         [HttpPut("{groupId}")]
-<<<<<<< refs/remotes/intellitect/Assignment6
         public async Task<IActionResult> AddUserToGroup(int groupId, int userId)
-=======
-        public async Task<ActionResult> AddUserToGroup(int groupId, int userId)
->>>>>>> Initial start of code for assignment 7
         {
             if (groupId <= 0)
             {
@@ -44,11 +40,7 @@ namespace SecretSanta.Api.Controllers
         }
 
         [HttpDelete("{groupId}")]
-<<<<<<< refs/remotes/intellitect/Assignment6
         public async Task<IActionResult> RemoveUserFromGroup(int groupId, int userId)
-=======
-        public async Task<ActionResult> RemoveUserFromGroup(int groupId, int userId)
->>>>>>> Initial start of code for assignment 7
         {
             if (groupId <= 0)
             {

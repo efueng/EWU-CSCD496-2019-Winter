@@ -1,10 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services;
-<<<<<<< refs/remotes/intellitect/Assignment6
 using System.Collections.Generic;
-=======
->>>>>>> Initial start of code for assignment 7
 using System.Threading.Tasks;
 
 namespace SecretSanta.Domain.Tests.Services
@@ -34,23 +31,15 @@ namespace SecretSanta.Domain.Tests.Services
                     OrderOfImportance = 1,
                     UserId = user.Id
                 };
-
-<<<<<<< refs/remotes/intellitect/Assignment6
-                Gift persistedGift = await giftService.AddGiftToUser(user.Id, gift);
-=======
-                var persistedGift = await giftService.AddGift(gift);
->>>>>>> Initial start of code for assignment 7
+                
+                Gift persistedGift = await giftService.AddGift(gift);
 
                 Assert.AreNotEqual(0, persistedGift.Id);
             }
         }
 
         [TestMethod]
-<<<<<<< refs/remotes/intellitect/Assignment6
-        public async Task UpdateGift()
-=======
         public async Task FetchGift()
->>>>>>> Initial start of code for assignment 7
         {
             using (var context = new ApplicationDbContext(Options))
             {
@@ -71,11 +60,8 @@ namespace SecretSanta.Domain.Tests.Services
                     OrderOfImportance = 1,
                     UserId = user.Id
                 };
-
-<<<<<<< refs/remotes/intellitect/Assignment6
-                Gift persistedGift = await giftService.AddGiftToUser(user.Id, gift);
-=======
-                var persistedGift = await giftService.AddGift(gift);
+                
+                Gift persistedGift =  await giftService.AddGift(gift);
 
                 Assert.AreNotEqual(0, persistedGift.Id);
             }
@@ -113,7 +99,6 @@ namespace SecretSanta.Domain.Tests.Services
                 };
 
                 var persistedGift = await giftService.AddGift(gift);
->>>>>>> Initial start of code for assignment 7
 
                 Assert.AreNotEqual(0, persistedGift.Id);
             }
@@ -122,23 +107,16 @@ namespace SecretSanta.Domain.Tests.Services
             {
                 GiftService giftService = new GiftService(context);
                 UserService userService = new UserService(context);
-
-<<<<<<< refs/remotes/intellitect/Assignment6
+                
                 List<User> users = await userService.FetchAll();
                 List<Gift> gifts =  await giftService.GetGiftsForUser(users[0].Id);
-=======
-                var users = await userService.FetchAll();
-                var gifts = await giftService.GetGiftsForUser(users[0].Id);
->>>>>>> Initial start of code for assignment 7
+
 
                 Assert.IsTrue(gifts.Count > 0);
 
                 gifts[0].Title = "Horse";
-<<<<<<< refs/remotes/intellitect/Assignment6
-                await giftService.UpdateGiftForUser(users[0].Id, gifts[0]);                
-=======
-                await giftService.UpdateGift(gifts[0]);                
->>>>>>> Initial start of code for assignment 7
+
+                await giftService.UpdateGift(gifts[0]);
             }
 
             using (var context = new ApplicationDbContext(Options))
@@ -146,13 +124,8 @@ namespace SecretSanta.Domain.Tests.Services
                 GiftService giftService = new GiftService(context);
                 UserService userService = new UserService(context);
 
-<<<<<<< refs/remotes/intellitect/Assignment6
                 List<User> users = await userService.FetchAll();
                 List<Gift> gifts = await giftService.GetGiftsForUser(users[0].Id);
-=======
-                var users = await userService.FetchAll();
-                var gifts = await giftService.GetGiftsForUser(users[0].Id);
->>>>>>> Initial start of code for assignment 7
 
                 Assert.IsTrue(gifts.Count > 0);
                 Assert.AreEqual("Horse", gifts[0].Title);            
