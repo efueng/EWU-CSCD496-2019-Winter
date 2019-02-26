@@ -52,7 +52,60 @@ namespace SecretSanta.Web.Controllers
 
                         result = RedirectToAction(nameof(Index));
                     }
-                    catch(SwaggerException se)
+                    catch (SwaggerException se)
+                    {
+                        ViewBag.ErrorMessage = se.Message;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Edit(int userId, UserInputViewModel viewModel)
+        {
+            IActionResult result = View();
+
+            if (ModelState.IsValid)
+            {
+                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+                {
+                    try
+                    {
+                        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                        await secretSantaClient.UpdateUserAsync(userId, viewModel);
+
+                        result = RedirectToAction(nameof(Index));
+                    }
+                    catch (SwaggerException se)
+                    {
+                        ViewBag.ErrorMessage = se.Message;
+                    }
+                }
+                
+            }
+
+            return result;
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int userId)
+        {
+            IActionResult result = View();
+
+            if (ModelState.IsValid)
+            {
+                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+                {
+                    try
+                    {
+                        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                        await secretSantaClient.DeleteUserAsync(userId);
+
+                        result = RedirectToAction(nameof(Index));
+                    }
+                    catch (SwaggerException se)
                     {
                         ViewBag.ErrorMessage = se.Message;
                     }
