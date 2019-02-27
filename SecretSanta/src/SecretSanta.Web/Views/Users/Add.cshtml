@@ -1,4 +1,6 @@
 ﻿@model UserInputViewModel
+
+<div asp-validation-summary="All"></div>
 <form asp-route="Add">
     <div class="field">
         <label class="label" asp-for="FirstName">First Name</label>
@@ -13,11 +15,11 @@
         </div>
     </div>
     <div class="field">
-        <div class="control">
+        <div class="control is-grouped">
             <button class="button is-primary">Submit</button>
         </div>
         <div class="control">
-            <button class="button is-light">Cancel</button>
+            <a asp-controller="Users" asp-action="Index" class="button is-light">Cancel</a>
         </div>
     </div>
 </form>

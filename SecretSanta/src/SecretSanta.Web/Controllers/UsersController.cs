@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SecretSanta.Web.ApiModels;
@@ -54,7 +55,7 @@ namespace SecretSanta.Web.Controllers
                     }
                     catch (SwaggerException se)
                     {
-                        ViewBag.ErrorMessage = se.Message;
+                        ModelState.AddModelError("", se.Message);
                     }
                 }
             }
@@ -62,8 +63,29 @@ namespace SecretSanta.Web.Controllers
             return result;
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Edit(int userId, UserInputViewModel viewModel)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            UserViewModel fetchedUser = null;
+
+            using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+            {
+                try
+                {
+                    var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                    fetchedUser = await secretSantaClient.GetUserAsync(id);
+                }
+                catch (SwaggerException se)
+                {
+                    ModelState.AddModelError("", se.Message);
+                }
+
+                return View(fetchedUser);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserViewModel viewModel)
         {
             IActionResult result = View();
 
@@ -74,13 +96,13 @@ namespace SecretSanta.Web.Controllers
                     try
                     {
                         var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                        await secretSantaClient.UpdateUserAsync(userId, viewModel);
+                        await secretSantaClient.UpdateUserAsync(viewModel.Id, Mapper.Map<UserInputViewModel>(viewModel));
 
                         result = RedirectToAction(nameof(Index));
                     }
                     catch (SwaggerException se)
                     {
-                        ViewBag.ErrorMessage = se.Message;
+                        ModelState.AddModelError("", se.Message);
                     }
                 }
                 
@@ -94,21 +116,18 @@ namespace SecretSanta.Web.Controllers
         {
             IActionResult result = View();
 
-            if (ModelState.IsValid)
+            using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
             {
-                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+                try
                 {
-                    try
-                    {
-                        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                        await secretSantaClient.DeleteUserAsync(userId);
+                    var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                    await secretSantaClient.DeleteUserAsync(userId);
 
-                        result = RedirectToAction(nameof(Index));
-                    }
-                    catch (SwaggerException se)
-                    {
-                        ViewBag.ErrorMessage = se.Message;
-                    }
+                    result = RedirectToAction(nameof(Index));
+                }
+                catch (SwaggerException se)
+                {
+                    ModelState.AddModelError("", se.Message);
                 }
             }
 
