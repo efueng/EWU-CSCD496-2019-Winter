@@ -15,9 +15,11 @@ namespace SecretSanta.Web.Controllers
     public class UsersController : Controller
     {
         private IHttpClientFactory ClientFactory { get; }
-        public UsersController(IHttpClientFactory clientFactory)
+        private IMapper Mapper { get; }
+        public UsersController(IHttpClientFactory clientFactory, IMapper mapper)
         {
             ClientFactory = clientFactory;
+            Mapper = mapper;
         }
 
         // GET: /<controller>/
@@ -111,7 +113,7 @@ namespace SecretSanta.Web.Controllers
             return result;
         }
 
-        [HttpDelete]
+        [HttpGet]
         public async Task<IActionResult> Delete(int userId)
         {
             IActionResult result = View();
