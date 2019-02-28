@@ -73,24 +73,27 @@ namespace SecretSanta.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            UserViewModel fetchedUser = null;
+            //UserViewModel fetchedUser = null;
 
-            using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
-            {
-                try
-                {
-                    var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                    fetchedUser = await secretSantaClient.GetUserAsync(id);
-                }
-                catch (SwaggerException se)
-                {
-                    ModelState.AddModelError("", se.Message);
-                }
+            //using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+            //{
+            //    try
+            //    {
+            //        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+            //        fetchedUser = await secretSantaClient.GetUserAsync(id);
+            //    }
+            //    catch (SwaggerException se)
+            //    {
+            //        ModelState.AddModelError("", se.Message);
+            //    }
 
-                return View(fetchedUser);
-            }
+            //    return View(fetchedUser);
+            //}
+
+            ViewBag.Id = id;
+            return View();
         }
 
         [HttpPost]

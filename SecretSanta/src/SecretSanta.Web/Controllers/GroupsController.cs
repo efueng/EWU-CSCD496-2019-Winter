@@ -72,34 +72,41 @@ namespace SecretSanta.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
-            GroupViewModel fetchedGroup = null;
+            //GroupViewModel fetchedGroup = null;
 
-            if (ModelState.IsValid)
-            {
-                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
-                {
-                    try
-                    {
-                        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+            //if (ModelState.IsValid)
+            //{
+            //    using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+            //    {
+            //        try
+            //        {
+            //            var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
 
-                        fetchedGroup = await secretSantaClient.GetGroupAsync(id);
-                    }
-                    catch (SwaggerException se)
-                    {
-                        ModelState.AddModelError("", se.Message);
-                    }
-                }
-            }
+            //            fetchedGroup = await secretSantaClient.GetGroupAsync(id);
+            //        }
+            //        catch (SwaggerException se)
+            //        {
+            //            ModelState.AddModelError("", se.Message);
+            //        }
+            //    }
+            //}
 
-            return View(fetchedGroup);
+            //return View(fetchedGroup);
+            ViewBag.Id = id;
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(GroupViewModel viewModel)
         {
             IActionResult result = View();
+
+            if (string.IsNullOrWhiteSpace(viewModel.Name))
+            {
+                ModelState.AddModelError("Name", "Invalid group name.");
+            }
 
             if (ModelState.IsValid)
             {

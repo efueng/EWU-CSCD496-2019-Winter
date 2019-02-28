@@ -8,7 +8,7 @@
     {
         <li>
             @user.FirstName @user.LastName
-            <a class="button" asp-route-id="@user.Id">Edit</a>
+            <a class="button" asp-action="edit" asp-route-id="@user.Id">Edit</a>
             <a class="button is-danger" asp-action="delete" asp-route-id="@user.Id" onclick="return confirm('Are you sure you want to delete @user.FirstName @user.LastName?')">Delete</a>
         </li>
     }
