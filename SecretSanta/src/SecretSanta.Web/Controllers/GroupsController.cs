@@ -5,38 +5,37 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SecretSanta.Web.ApiModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SecretSanta.Web.Controllers
 {
-    public class UsersController : Controller
+    public class GroupsController : Controller
     {
         private IHttpClientFactory ClientFactory { get; }
         private IMapper Mapper { get; }
-        public UsersController(IHttpClientFactory clientFactory, IMapper mapper)
+        public GroupsController(IHttpClientFactory clientFactory, IMapper mapper)
         {
             ClientFactory = clientFactory;
             Mapper = mapper;
         }
-
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
-            try
+            using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
             {
-                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+                try
                 {
                     var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                    ViewBag.Users = await secretSantaClient.GetAllUsersAsync();
+                    ViewBag.Groups = await secretSantaClient.GetGroupsAsync();
+                }
+                catch (SwaggerException se)
+                {
+                    ModelState.AddModelError("", se.Message);
                 }
             }
-            catch (SwaggerException se)
-            {
-                ModelState.AddModelError("", se.Message);
-            }
+
             return View();
         }
 
@@ -45,9 +44,9 @@ namespace SecretSanta.Web.Controllers
         {
             return View();
         }
-
+        
         [HttpPost]
-        public async Task<IActionResult> Add(UserInputViewModel viewModel)
+        public async Task<IActionResult> Add(GroupInputViewModel viewModel)
         {
             IActionResult result = View();
 
@@ -58,7 +57,7 @@ namespace SecretSanta.Web.Controllers
                     try
                     {
                         var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                        await secretSantaClient.CreateUserAsync(viewModel);
+                        await secretSantaClient.CreateGroupAsync(viewModel);
 
                         result = RedirectToAction(nameof(Index));
                     }
@@ -75,26 +74,30 @@ namespace SecretSanta.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            UserViewModel fetchedUser = null;
+            GroupViewModel fetchedGroup = null;
 
-            using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+            if (ModelState.IsValid)
             {
-                try
+                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
                 {
-                    var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                    fetchedUser = await secretSantaClient.GetUserAsync(id);
-                }
-                catch (SwaggerException se)
-                {
-                    ModelState.AddModelError("", se.Message);
-                }
+                    try
+                    {
+                        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
 
-                return View(fetchedUser);
+                        fetchedGroup = await secretSantaClient.GetGroupAsync(id);
+                    }
+                    catch (SwaggerException se)
+                    {
+                        ModelState.AddModelError("", se.Message);
+                    }
+                }
             }
+
+            return View(fetchedGroup);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UserViewModel viewModel)
+        public async Task<IActionResult> Edit(GroupViewModel viewModel)
         {
             IActionResult result = View();
 
@@ -105,7 +108,7 @@ namespace SecretSanta.Web.Controllers
                     try
                     {
                         var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                        await secretSantaClient.UpdateUserAsync(viewModel.Id, Mapper.Map<UserInputViewModel>(viewModel));
+                        await secretSantaClient.UpdateGroupAsync(viewModel.Id, Mapper.Map<GroupInputViewModel>(viewModel));
 
                         result = RedirectToAction(nameof(Index));
                     }
@@ -114,13 +117,12 @@ namespace SecretSanta.Web.Controllers
                         ModelState.AddModelError("", se.Message);
                     }
                 }
-                
+
             }
-            //return View()
+
             return result;
         }
 
-        //[HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             IActionResult result = View();
@@ -130,7 +132,7 @@ namespace SecretSanta.Web.Controllers
                 try
                 {
                     var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                    await secretSantaClient.DeleteUserAsync(id);
+                    await secretSantaClient.DeleteGroupAsync(id);
 
                     result = RedirectToAction(nameof(Index));
                 }
@@ -138,9 +140,9 @@ namespace SecretSanta.Web.Controllers
                 {
                     ModelState.AddModelError("", se.Message);
                 }
+
+                return result;
             }
-            
-            return result;
         }
     }
 }
