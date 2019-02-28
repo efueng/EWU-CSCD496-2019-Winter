@@ -7,8 +7,8 @@
     @foreach (var group in ViewBag.Groups)
     {
         <li>
-            @group.Name @group.Id
-            <a class="button" asp-route-id="@group.Id">Edit</a>
+            Name: @group.Name   ID: @group.Id
+            <a class="button" asp-action="edit" asp-route-id="@group.Id">Edit</a>
             <a class="button is-danger" asp-action="delete" asp-route-id="@group.Id" onclick="return confirm('Are you sure you want to delete @group.Name @group.Id?')">Delete</a>
         </li>
     }
