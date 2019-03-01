@@ -52,7 +52,7 @@ namespace SecretSanta.Web.Controllers
 
             if (string.IsNullOrWhiteSpace(viewModel.Name))
             {
-                ModelState.AddModelError("Name", "Invalid group name.");
+                ModelState.AddModelError("Name", "Group Name field is required.");
             }
 
             if (ModelState.IsValid)
@@ -90,7 +90,7 @@ namespace SecretSanta.Web.Controllers
 
             if (string.IsNullOrWhiteSpace(viewModel.Name))
             {
-                ModelState.AddModelError("Name", "Invalid group name.");
+                ModelState.AddModelError("Name", "Group Name field is required.");
             }
 
             if (ModelState.IsValid)

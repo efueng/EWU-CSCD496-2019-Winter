@@ -53,7 +53,7 @@ namespace SecretSanta.Web.Controllers
 
             if (string.IsNullOrWhiteSpace(viewModel.LastName))
             {
-                ModelState.AddModelError("LastName", "Invalid last name.");
+                ModelState.AddModelError("LastName", "Last Name field is required.");
             }
 
             if (ModelState.IsValid)
@@ -89,9 +89,14 @@ namespace SecretSanta.Web.Controllers
         {
             IActionResult result = View();
 
+            if (string.IsNullOrWhiteSpace(viewModel.FirstName))
+            {
+                ModelState.AddModelError("FirstName", "First Name field is required.");
+            }
+
             if (string.IsNullOrWhiteSpace(viewModel.LastName))
             {
-                ModelState.AddModelError("LastName", "Invalid last name.");
+                ModelState.AddModelError("LastName", "Last Name field is required.");
             }
 
             if (ModelState.IsValid)
