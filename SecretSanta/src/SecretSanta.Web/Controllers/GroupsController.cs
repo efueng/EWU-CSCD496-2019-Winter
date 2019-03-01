@@ -50,6 +50,11 @@ namespace SecretSanta.Web.Controllers
         {
             IActionResult result = View();
 
+            if (string.IsNullOrWhiteSpace(viewModel.Name))
+            {
+                ModelState.AddModelError("Name", "Invalid group name.");
+            }
+
             if (ModelState.IsValid)
             {
                 using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
@@ -74,26 +79,6 @@ namespace SecretSanta.Web.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            //GroupViewModel fetchedGroup = null;
-
-            //if (ModelState.IsValid)
-            //{
-            //    using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
-            //    {
-            //        try
-            //        {
-            //            var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-
-            //            fetchedGroup = await secretSantaClient.GetGroupAsync(id);
-            //        }
-            //        catch (SwaggerException se)
-            //        {
-            //            ModelState.AddModelError("", se.Message);
-            //        }
-            //    }
-            //}
-
-            //return View(fetchedGroup);
             ViewBag.Id = id;
             return View();
         }

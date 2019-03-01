@@ -51,6 +51,11 @@ namespace SecretSanta.Web.Controllers
         {
             IActionResult result = View();
 
+            if (string.IsNullOrWhiteSpace(viewModel.LastName))
+            {
+                ModelState.AddModelError("LastName", "Invalid last name.");
+            }
+
             if (ModelState.IsValid)
             {
                 using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
@@ -75,23 +80,6 @@ namespace SecretSanta.Web.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            //UserViewModel fetchedUser = null;
-
-            //using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
-            //{
-            //    try
-            //    {
-            //        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-            //        fetchedUser = await secretSantaClient.GetUserAsync(id);
-            //    }
-            //    catch (SwaggerException se)
-            //    {
-            //        ModelState.AddModelError("", se.Message);
-            //    }
-
-            //    return View(fetchedUser);
-            //}
-
             ViewBag.Id = id;
             return View();
         }
@@ -100,6 +88,11 @@ namespace SecretSanta.Web.Controllers
         public async Task<IActionResult> Edit(UserViewModel viewModel)
         {
             IActionResult result = View();
+
+            if (string.IsNullOrWhiteSpace(viewModel.LastName))
+            {
+                ModelState.AddModelError("LastName", "Invalid last name.");
+            }
 
             if (ModelState.IsValid)
             {
