@@ -29,14 +29,14 @@ namespace SecretSanta.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<ICollection<GroupViewModel>>> GetGroups()
         {
-            var groups = await GroupService.FetchAll();
+            List<Group> groups = await GroupService.FetchAll().ConfigureAwait(false);
             return Ok(groups.Select(x => Mapper.Map<GroupViewModel>(x)));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<GroupViewModel>> GetGroup(int id)
         {
-            var group = await GroupService.GetById(id);
+            Group group = await GroupService.GetById(id).ConfigureAwait(false);
             if (group == null)
             {
                 return NotFound();
@@ -53,7 +53,7 @@ namespace SecretSanta.Api.Controllers
             {
                 return BadRequest();
             }
-            var createdGroup = await GroupService.AddGroup(Mapper.Map<Group>(viewModel));
+            Group createdGroup = await GroupService.AddGroup(Mapper.Map<Group>(viewModel)).ConfigureAwait(false);
             return CreatedAtAction(nameof(GetGroup), new { id = createdGroup.Id}, Mapper.Map<GroupViewModel>(createdGroup));
         }
 
@@ -65,14 +65,14 @@ namespace SecretSanta.Api.Controllers
             {
                 return BadRequest();
             }
-            var group = await GroupService.GetById(id);
+            Group group = await GroupService.GetById(id).ConfigureAwait(false);
             if (group == null)
             {
                 return NotFound();
             }
 
             Mapper.Map(viewModel, group);
-            await GroupService.UpdateGroup(group);
+            await GroupService.UpdateGroup(group).ConfigureAwait(false);
 
             return NoContent();
         }
@@ -86,7 +86,7 @@ namespace SecretSanta.Api.Controllers
                 return BadRequest("A group id must be specified");
             }
 
-            if (await GroupService.DeleteGroup(id))
+            if (await GroupService.DeleteGroup(id).ConfigureAwait(false))
             {
                 return Ok();
             }

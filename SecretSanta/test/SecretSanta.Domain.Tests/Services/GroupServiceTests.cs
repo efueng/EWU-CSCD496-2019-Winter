@@ -11,16 +11,16 @@ namespace SecretSanta.Domain.Tests.Services
         [TestMethod]
         public async Task AddGroup()
         {
-            using (var context = new ApplicationDbContext(Options))
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
             {
                 GroupService groupService = new GroupService(context);
 
-                var group = new Group
+                Group group = new Group
                 {
                     Name = "Brute Squad"
                 };
 
-                await groupService.AddGroup(group);
+                await groupService.AddGroup(group).ConfigureAwait(false);
 
                 Assert.AreNotEqual(0, group.Id);
             }
@@ -29,36 +29,36 @@ namespace SecretSanta.Domain.Tests.Services
         [TestMethod]
         public async Task UpdateUser()
         {
-            using (var context = new ApplicationDbContext(Options))
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
             {
                 UserService userService = new UserService(context);
 
-                var user = new User
+                User user = new User
                 {
                     FirstName = "Inigo",
                     LastName = "Montoya"
                 };
 
-                await userService.AddUser(user);
+                await userService.AddUser(user).ConfigureAwait(false);
 
                 Assert.AreNotEqual(0, user.Id);
             }
 
-            using (var context = new ApplicationDbContext(Options))
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
             {
                 UserService userService = new UserService(context);
-                var retrievedUser = await userService.GetById(1);
+                User retrievedUser = await userService.GetById(1).ConfigureAwait(false);
 
                 retrievedUser.FirstName = "Princess";
                 retrievedUser.LastName = "Buttercup";
 
-                await userService.UpdateUser(retrievedUser);
+                await userService.UpdateUser(retrievedUser).ConfigureAwait(false);
             }
 
-            using (var context = new ApplicationDbContext(Options))
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
             {
                 UserService userService = new UserService(context);
-                var retrievedUser = await userService.GetById(1);
+                User retrievedUser = await userService.GetById(1).ConfigureAwait(false);
 
                 Assert.AreEqual("Princess", retrievedUser.FirstName);
                 Assert.AreEqual("Buttercup", retrievedUser.LastName);
@@ -68,32 +68,32 @@ namespace SecretSanta.Domain.Tests.Services
         [TestMethod]
         public async Task DeleteUser()
         {
-            using (var context = new ApplicationDbContext(Options))
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
             {
                 UserService userService = new UserService(context);
 
-                var user = new User
+                User user = new User
                 {
                     FirstName = "Inigo",
                     LastName = "Montoya"
                 };
 
-                await userService.AddUser(user);
+                await userService.AddUser(user).ConfigureAwait(false);
 
                 Assert.AreNotEqual(0, user.Id);
             }
 
-            using (var context = new ApplicationDbContext(Options))
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
             {
                 UserService userService = new UserService(context);
-                bool isDeleted = await userService.DeleteUser(1);
+                bool isDeleted = await userService.DeleteUser(1).ConfigureAwait(false);
                 Assert.IsTrue(isDeleted);
             }
 
-            using (var context = new ApplicationDbContext(Options))
+            using (ApplicationDbContext context = new ApplicationDbContext(Options))
             {
                 UserService userService = new UserService(context);
-                var retrievedUser = await userService.GetById(1);
+                User retrievedUser = await userService.GetById(1).ConfigureAwait(false);
 
                 Assert.IsNull(retrievedUser);
             }

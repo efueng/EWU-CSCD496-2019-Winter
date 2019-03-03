@@ -29,14 +29,14 @@ namespace SecretSanta.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<ICollection<UserViewModel>>> GetAllUsers()
         {
-            var users = await UserService.FetchAll();
+            List<User> users = await UserService.FetchAll().ConfigureAwait(false);
             return Ok(users.Select(x => Mapper.Map<UserViewModel>(x)));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserViewModel>> GetUser(int id)
+        public async Task<ActionResult<UserViewModel>> GetUserById(int id)
         {
-            var fetchedUser = await UserService.GetById(id);
+            User fetchedUser = await UserService.GetById(id).ConfigureAwait(false);
             if (fetchedUser == null)
             {
                 return NotFound();
@@ -54,9 +54,9 @@ namespace SecretSanta.Api.Controllers
                 return BadRequest();
             }
 
-            var createdUser = await UserService.AddUser(Mapper.Map<User>(viewModel));
+            User createdUser = await UserService.AddUser(Mapper.Map<User>(viewModel)).ConfigureAwait(false);
 
-            return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, Mapper.Map<UserViewModel>(createdUser));
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, Mapper.Map<UserViewModel>(createdUser));
         }
 
         // PUT api/User/5
@@ -67,14 +67,14 @@ namespace SecretSanta.Api.Controllers
             {
                 return BadRequest();
             }
-            var fetchedUser = await UserService.GetById(id);
+            User fetchedUser = await UserService.GetById(id).ConfigureAwait(false);
             if (fetchedUser == null)
             {
                 return NotFound();
             }
 
             Mapper.Map(viewModel, fetchedUser);
-            await UserService.UpdateUser(fetchedUser);
+            await UserService.UpdateUser(fetchedUser).ConfigureAwait(false);
             return NoContent();
         }
 
@@ -87,7 +87,7 @@ namespace SecretSanta.Api.Controllers
                 return BadRequest("A User id must be specified");
             }
 
-            if (await UserService.DeleteUser(id))
+            if (await UserService.DeleteUser(id).ConfigureAwait(false))
             {
                 return Ok();
             }

@@ -27,10 +27,10 @@ namespace SecretSanta.Web.Controllers
         {
             try
             {
-                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+                using (HttpClient httpClient = ClientFactory.CreateClient("SecretSantaApi"))
                 {
-                    var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                    ViewBag.Users = await secretSantaClient.GetAllUsersAsync();
+                    SecretSantaClient secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                    ViewBag.Users = await secretSantaClient.GetAllUsersAsync().ConfigureAwait(false);
                 }
             }
             catch (SwaggerException se)
@@ -58,12 +58,12 @@ namespace SecretSanta.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+                using (HttpClient httpClient = ClientFactory.CreateClient("SecretSantaApi"))
                 {
                     try
                     {
-                        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                        await secretSantaClient.CreateUserAsync(viewModel);
+                        SecretSantaClient secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                        await secretSantaClient.CreateUserAsync(viewModel).ConfigureAwait(false);
 
                         result = RedirectToAction(nameof(Index));
                     }
@@ -101,12 +101,12 @@ namespace SecretSanta.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+                using (HttpClient httpClient = ClientFactory.CreateClient("SecretSantaApi"))
                 {
                     try
                     {
-                        var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                        await secretSantaClient.UpdateUserAsync(viewModel.Id, Mapper.Map<UserInputViewModel>(viewModel));
+                        SecretSantaClient secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                        await secretSantaClient.UpdateUserAsync(viewModel.Id, Mapper.Map<UserInputViewModel>(viewModel)).ConfigureAwait(false);
 
                         result = RedirectToAction(nameof(Index));
                     }
@@ -126,12 +126,12 @@ namespace SecretSanta.Web.Controllers
         {
             IActionResult result = View();
 
-            using (var httpClient = ClientFactory.CreateClient("SecretSantaApi"))
+            using (HttpClient httpClient = ClientFactory.CreateClient("SecretSantaApi"))
             {
                 try
                 {
-                    var secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
-                    await secretSantaClient.DeleteUserAsync(id);
+                    SecretSantaClient secretSantaClient = new SecretSantaClient(httpClient.BaseAddress.ToString(), httpClient);
+                    await secretSantaClient.DeleteUserAsync(id).ConfigureAwait(false);
 
                     result = RedirectToAction(nameof(Index));
                 }

@@ -32,7 +32,7 @@ namespace SecretSanta.Api.Controllers
                 return BadRequest();
             }
 
-            if (await GroupService.AddUserToGroup(groupId, userId))
+            if (await GroupService.AddUserToGroup(groupId, userId).ConfigureAwait(false))
             {
                 return Ok();
             }
@@ -52,7 +52,7 @@ namespace SecretSanta.Api.Controllers
                 return BadRequest();
             }
 
-            if (await GroupService.RemoveUserFromGroup(groupId, userId))
+            if (await GroupService.RemoveUserFromGroup(groupId, userId).ConfigureAwait(false))
             {
                 return Ok();
             }

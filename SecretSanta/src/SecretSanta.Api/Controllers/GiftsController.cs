@@ -28,7 +28,7 @@ namespace SecretSanta.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<GiftViewModel>> GetGift(int id)
         {
-            var gift = await GiftService.GetGift(id);
+            Gift gift = await GiftService.GetGift(id).ConfigureAwait(false);
 
             if (gift == null)
             {
@@ -41,7 +41,7 @@ namespace SecretSanta.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<GiftViewModel>> CreateGift(GiftInputViewModel viewModel)
         {
-            var createdGift = await GiftService.AddGift(Mapper.Map<Gift>(viewModel));
+            Gift createdGift = await GiftService.AddGift(Mapper.Map<Gift>(viewModel)).ConfigureAwait(false);
 
             return CreatedAtAction(nameof(GetGift), new { id = createdGift.Id }, Mapper.Map<GiftViewModel>(createdGift));
         }
@@ -54,7 +54,7 @@ namespace SecretSanta.Api.Controllers
             {
                 return NotFound();
             }
-            List<Gift> databaseUsers = await GiftService.GetGiftsForUser(userId);
+            List<Gift> databaseUsers = await GiftService.GetGiftsForUser(userId).ConfigureAwait(false);
 
             return Ok(databaseUsers.Select(x => Mapper.Map<GiftViewModel>(x)).ToList());
         }

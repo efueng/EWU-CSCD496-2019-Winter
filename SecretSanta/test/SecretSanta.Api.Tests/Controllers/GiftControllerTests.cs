@@ -25,7 +25,7 @@ namespace SecretSanta.Api.Tests.Controllers
         [TestMethod]
         public async Task GetGiftForUser_ReturnsUsersFromService()
         {
-            var gift = new Gift
+            Gift gift = new Gift
             {
                 Id = 3,
                 Title = "Gift Tile",
@@ -33,16 +33,16 @@ namespace SecretSanta.Api.Tests.Controllers
                 Url = "http://www.gift.url",
                 OrderOfImportance = 1
             };
-            var testService = new TestableGiftService
+            TestableGiftService testService = new TestableGiftService
             {
                 ToReturn = new List<Gift>
                 {
                     gift
                 }
             };
-            var controller = new GiftsController(testService, Mapper.Instance);
+            GiftsController controller = new GiftsController(testService, Mapper.Instance);
 
-            var result = (await controller.GetGiftsForUser(4)).Result as OkObjectResult;
+            OkObjectResult result = (await controller.GetGiftsForUser(4).ConfigureAwait(false)).Result as OkObjectResult;
 
             Assert.AreEqual(4, testService.GetGiftsForUser_UserId);
             GiftViewModel resultGift = ((List<GiftViewModel>)result.Value).Single();
@@ -56,10 +56,10 @@ namespace SecretSanta.Api.Tests.Controllers
         [TestMethod]
         public async Task GetGiftForUser_RequiresPositiveUserId()
         {
-            var testService = new TestableGiftService();
-            var controller = new GiftsController(testService, Mapper.Instance);
+            TestableGiftService testService = new TestableGiftService();
+            GiftsController controller = new GiftsController(testService, Mapper.Instance);
 
-            var result = await controller.GetGiftsForUser(-1);
+            ActionResult<ICollection<GiftViewModel>> result = await controller.GetGiftsForUser(-1).ConfigureAwait(false);
 
             Assert.IsNotNull(result);
             //This check ensures that the service was not called

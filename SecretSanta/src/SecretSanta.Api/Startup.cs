@@ -57,8 +57,8 @@ namespace SecretSanta.Api
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
-            var dependencyContext = DependencyContext.Default;
-            var assemblies = dependencyContext.RuntimeLibraries.SelectMany(lib =>
+            DependencyContext dependencyContext = DependencyContext.Default;
+            Assembly[] assemblies = dependencyContext.RuntimeLibraries.SelectMany(lib =>
                 lib.GetDefaultAssemblyNames(dependencyContext)
                     .Where(a => a.Name.Contains("SecretSanta")).Select(Assembly.Load)).ToArray();
             services.AddAutoMapper(assemblies);

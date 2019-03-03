@@ -37,11 +37,11 @@ namespace SecretSanta.Api
                 .CreateLogger();
             try
             {
-                var host = CreateWebHostBuilder(args).Build();
+                IWebHost host = CreateWebHostBuilder(args).Build();
 
-                using (var serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                using (IServiceScope serviceScope = host.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
-                    using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                    using (ApplicationDbContext context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
                     {
                         context.Database.Migrate();
                     }

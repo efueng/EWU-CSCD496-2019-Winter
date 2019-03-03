@@ -31,9 +31,9 @@ namespace SecretSanta.Web
                 config.BaseAddress = new Uri(Configuration.GetSection("SecretSantaApi").GetValue<string>("BaseUri"));
             });
 
-            var dependencyContext = DependencyContext.Default;
+            DependencyContext dependencyContext = DependencyContext.Default;
 
-            var assemblies = dependencyContext.RuntimeLibraries.SelectMany(lib =>
+            Assembly[] assemblies = dependencyContext.RuntimeLibraries.SelectMany(lib =>
                 lib.GetDefaultAssemblyNames(dependencyContext)
                     .Where(a => a.Name.Contains("SecretSanta"))
                     .Select(Assembly.Load)).ToArray();

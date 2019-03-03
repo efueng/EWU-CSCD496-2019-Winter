@@ -33,7 +33,7 @@ namespace SecretSanta.Api.Models
             try
             {
                 // Check if physical path was provided by ANCM
-                var sitePhysicalPath = Environment.GetEnvironmentVariable("ASPNETCORE_IIS_PHYSICAL_PATH");
+                string sitePhysicalPath = Environment.GetEnvironmentVariable("ASPNETCORE_IIS_PHYSICAL_PATH");
                 if (string.IsNullOrEmpty(sitePhysicalPath))
                 {
                     // Skip if not running ANCM InProcess
