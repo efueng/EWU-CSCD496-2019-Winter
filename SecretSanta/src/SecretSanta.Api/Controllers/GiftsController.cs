@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using SecretSanta.Api.ViewModels;
 using SecretSanta.Domain.Models;
 using SecretSanta.Domain.Services.Interfaces;
+using Serilog;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -32,9 +33,12 @@ namespace SecretSanta.Api.Controllers
 
             if (gift == null)
             {
+                Log.Logger.Debug($"{nameof(id)} was invalid on call to {nameof(GetGift)}");
+                Log.Logger.Error($"{nameof(id)} was invalid on call to {nameof(GetGift)}");
                 return NotFound();
             }
 
+            Log.Logger.Information($"Returning GiftViewModel from {nameof(GetGift)}", id);
             return Ok(Mapper.Map<GiftViewModel>(gift));
         }
 
@@ -43,6 +47,7 @@ namespace SecretSanta.Api.Controllers
         {
             Gift createdGift = await GiftService.AddGift(Mapper.Map<Gift>(viewModel)).ConfigureAwait(false);
 
+            Log.Logger.Information($"Gift was created and added on call to {nameof(CreateGift)}", viewModel);
             return CreatedAtAction(nameof(GetGift), new { id = createdGift.Id }, Mapper.Map<GiftViewModel>(createdGift));
         }
 
@@ -52,10 +57,12 @@ namespace SecretSanta.Api.Controllers
         {
             if (userId <= 0)
             {
+                Log.Logger.Debug($"{nameof(userId)} was invalid on call to {nameof(GetGiftsForUser)}");
+                Log.Logger.Error($"{nameof(userId)} was invalid on call to {nameof(GetGiftsForUser)}");
                 return NotFound();
             }
             List<Gift> databaseUsers = await GiftService.GetGiftsForUser(userId).ConfigureAwait(false);
-
+            Log.Logger.Information($"Returning ICollection<GiftViewModel> from {nameof(GetGiftsForUser)}", userId);
             return Ok(databaseUsers.Select(x => Mapper.Map<GiftViewModel>(x)).ToList());
         }
     }
