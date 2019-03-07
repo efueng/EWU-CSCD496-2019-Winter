@@ -39,6 +39,7 @@ namespace SecretSanta.Api
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("App Name", "SecretSanta.Api")
                 .WriteTo.Console()
+                .WriteTo.ApplicationInsights("ed1b38da-118f-4f5c-9e49-691e81093518", TelemetryConverter.Events)
                 .WriteTo.SQLite(Configuration.GetConnectionString("DefaultConnection"))
                 .CreateLogger();
             try
