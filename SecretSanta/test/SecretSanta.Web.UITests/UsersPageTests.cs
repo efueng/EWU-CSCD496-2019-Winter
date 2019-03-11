@@ -27,15 +27,11 @@ namespace SecretSanta.Web.UITests
             if (TestContext.CurrentTestOutcome == UnitTestOutcome.Failed)
             {
                 string projectRoot =
-                    AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.LastIndexOf("bin"));
-
-                projectRoot =
                     Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin"));
 
-                string fileName = $"{projectRoot}/Screenshots/{TestContext.TestName}";
+                string fileName = $"{projectRoot}/Screenshots/{TestContext.TestName}.png";
 
                 Screenshot screenshot = ((ITakesScreenshot) Driver).GetScreenshot();
-                //screenshot.SaveAsFile()
                 screenshot.SaveAsFile(fileName, ScreenshotImageFormat.Png);
             }
 
@@ -111,7 +107,7 @@ namespace SecretSanta.Web.UITests
         }
 
         [TestMethod]
-        public void FailToDeleteUserChecksScreenshot()
+        public void FailToDeleteUserTakesScreenshot()
         {
             //Arrange
             string firstName = "FirstName";
