@@ -9,9 +9,10 @@ namespace SecretSanta.Web.UITests.TestPages
     {
         public IWebDriver Driver { get; }
         public GroupsPage GroupsPage => new GroupsPage(Driver);
+        public UsersPage UsersPage => new UsersPage(Driver);
 
         public IWebElement GroupsLink => Driver.FindElement(By.CssSelector("a[href=\"/Groups\"]"));
-        //public IWebElement GroupsLink => Driver.FindElement(By.LinkText("Groups"));
+        public IWebElement UsersLink => Driver.FindElement(By.CssSelector("a[href=\"/Users\"]"));
 
         public HomePage(IWebDriver driver)
         {

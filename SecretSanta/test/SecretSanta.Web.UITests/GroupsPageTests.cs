@@ -23,8 +23,8 @@ namespace SecretSanta.Web.UITests
         [TestCleanup]
         public void Cleanup()
         {
-            //Driver.Quit();
-            //Driver.Dispose();
+            Driver.Quit();
+            Driver.Dispose();
         }
 
         [TestMethod]
@@ -83,10 +83,13 @@ namespace SecretSanta.Web.UITests
             GroupsPage page = CreateGroup(groupName);
 
             //Act
-
-
+            var deleteLink = page.GetDeleteLink(groupName);
+            deleteLink.Click();
+            Driver.SwitchTo().Alert().Accept();
 
             //Assert
+            List<string> groupNames = page.GroupNames;
+            Assert.IsFalse(groupNames.Contains(groupName));
         }
 
         private GroupsPage CreateGroup(string groupName)

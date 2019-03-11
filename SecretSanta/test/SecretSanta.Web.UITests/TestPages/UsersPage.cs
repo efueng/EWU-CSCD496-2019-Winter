@@ -6,15 +6,15 @@ using System.Text;
 
 namespace SecretSanta.Web.UITests.TestPages
 {
-    public class GroupsPage
+    public class UsersPage
     {
-        public const string Slug = "Groups";
+        public const string Slug = "Users";
         public IWebDriver Driver { get; }
-        public IWebElement AddGroupButton => Driver.FindElement(By.LinkText("Add Group"));
+        public IWebElement AddUserButton => Driver.FindElement(By.LinkText("Add User"));
         public IWebElement EditButton => Driver.FindElement(By.LinkText("Edit"));
         public IWebElement DeleteButton => Driver.FindElement(By.LinkText("Delete"));
-        public AddGroupPage AddGroupPage => new AddGroupPage(Driver);
-        public List<string> GroupNames
+        public AddUserPage AddUserPage => new AddUserPage(Driver);
+        public List<string> UserNames
         {
             get
             {
@@ -33,15 +33,15 @@ namespace SecretSanta.Web.UITests.TestPages
             }
         }
 
-        public IWebElement GetDeleteLink(string groupName)
+        public IWebElement GetDeleteLink(string userName)
         {
-            IReadOnlyCollection<IWebElement> deleteLinks = 
+            IReadOnlyCollection<IWebElement> deleteLinks =
                 Driver.FindElements(By.CssSelector("a.is-danger"));
 
-            return deleteLinks.Single(x => x.GetAttribute("onclick").EndsWith($"{groupName}?')"));
+            return deleteLinks.Single(x => x.GetAttribute("onclick").EndsWith($"{userName}?')"));
         }
 
-        public GroupsPage(IWebDriver driver)
+        public UsersPage(IWebDriver driver)
         {
             Driver = driver ?? throw new ArgumentNullException(nameof(driver));
         }
